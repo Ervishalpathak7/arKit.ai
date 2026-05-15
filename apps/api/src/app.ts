@@ -10,6 +10,8 @@ import healthRoutes from "./routes/health.js";
 import aiPlugin from "./plugins/grok.js";
 import authPlugin from "./plugins/auth.js";
 import { UserRouter } from "./modules/user/user.routes.js";
+import { DesignRouter } from "./modules/design/design.routes.js";
+import { queuePlugin } from "./plugins/queue.js";
 
 // Fastify app initialization
 const app = Fastify({
@@ -30,12 +32,16 @@ app.register(clerk);
 app.register(authPlugin);
 app.register(cookiePlugin);
 app.register(prismaPlugin);
+app.register(queuePlugin)
 app.register(aiPlugin);
 
 // Routes
 app.register(healthRoutes);
 app.register(UserRouter, {
-  prefix: "api/users",
+  prefix: "/api/users",
+});
+app.register(DesignRouter, {
+  prefix: "/api/design",
 });
 
 process.on("SIGINT", () => gracefullShutdown(app));

@@ -20,9 +20,6 @@ model User {
   status        UserStatus @default(ACTIVE)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-
-  @@index([clerkId])
-  @@index([email])
 }
 
 enum Plan {
@@ -46,9 +43,15 @@ model Design {
   id            String   @id @default(cuid())
   authorId      String
   title         String?
-  description   String?
-  techStack     String?
   body          Json?
+  prompt        String
+  status        DesignStatus @default(PROCESSING)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+}
+
+enum DesignStatus {
+  PROCESSING
+  READY
+  FAILED
 }
