@@ -2,6 +2,7 @@ node_modules
 dist/*
 *.env
 apps/api/src/generated
+.vscode
 
 # Logs
 logs

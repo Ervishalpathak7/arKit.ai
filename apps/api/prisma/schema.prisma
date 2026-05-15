@@ -8,13 +8,38 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  avatar    String
-  clerkId   String   @unique
+  id            String   @id @default(cuid())
+  clerkId       String   @unique
+  email         String   @unique
+  firstName     String
+  lastName      String
+  imageUrl      String
+  plan          Plan     @default(FREE)
+  credits       Int      @default(5)
+  role          UserRole @default(USER)
+  status        UserStatus @default(ACTIVE)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([clerkId])
+  @@index([email])
+}
+
+enum Plan {
+  FREE
+  PRO
+  MAX
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  DELETED
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
 
 model Design {
@@ -24,6 +49,6 @@ model Design {
   description   String?
   techStack     String?
   body          Json?
-  createdAt DateTime @default(now())
+  createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
