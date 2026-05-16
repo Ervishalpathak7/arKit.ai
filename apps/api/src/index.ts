@@ -1,9 +1,28 @@
-import express from "express";
+import { env } from "@/config/env.js";
+import { CreateApp } from "./app.js";
 
-const app = express();
-const PORT = 3000;
+async function StartServer() {
+  const app = CreateApp();
+  const server = app.listen(env.PORT, () => {
+    console.log(`Server running on port : ${env.PORT}`);
+  });
 
-app.listen(PORT, (err) => {
-  if (err) console.error(`erron in starting app : ${err}`);
-  console.log(`app is running on http://localhost:${PORT}`);
+  process.on("SIGTERM", () => {
+    console.log("[server] SIGTERM — shutting down gracefully");
+    server.close(() => {
+      process.exitCode = 0;
+    });
+  });
+
+  process.on("SIGINT", () => {
+    console.log("[server] SIGTERM — shutting down gracefully");
+    server.close(() => {
+      process.exitCode = 0;
+    });
+  });
+}
+
+StartServer().catch((err) => {
+  console.error("[server] Fatal startup error", err);
+  process.exitCode = 1;
 });

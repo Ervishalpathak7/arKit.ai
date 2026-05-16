@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc -b",
+    "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
     "test": "echo 'Add test script here'",
     "lint": "echo 'Add lint script here'"
@@ -19,6 +19,7 @@
     "nodemon": "^3.1.14",
     "npm-run-all": "^4.1.5",
     "prisma": "7.8.0",
+    "tsc-alias": "^1.8.17",
     "typescript": "^6.0.3"
   },
   "dependencies": {
