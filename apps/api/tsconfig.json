@@ -2,9 +2,8 @@
   "extends": "@archiq/typescript-config/base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "paths": {
-        "@/*" : ["./src"]
+      "@/*": ["./src"]
     }
-  }
+  },
 }
