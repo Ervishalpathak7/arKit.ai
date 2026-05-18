@@ -1,0 +1,23 @@
+{
+  "name": "@archiq/logger",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@archiq/typescript-config": "workspace:*"
+  },
+  "dependencies": {
+    "pino": "^10.3.1",
+    "pino-pretty": "^13.1.3"
+  }
+}
