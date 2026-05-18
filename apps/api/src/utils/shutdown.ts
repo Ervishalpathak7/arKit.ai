@@ -1,12 +1,11 @@
+import { Bootstrap } from "@/bootstrap/bootstrap.js";
 import { log } from "@/config/logger.js";
-import { disconnectDatabase } from "@/db/prisma.js";
 import { disconnectRedis } from "@/db/redis.js";
 import { Server } from "http";
 
-export const gracefulShutdown = async (signal: string, server: Server) => {
+export const gracefulShutdown = async (signal: string, server: Server , bootstrap : Bootstrap) => {
   log.info(`[${signal}] Shutdown initiated`);
-  await disconnectDatabase();
-  log.info({ database: "postgres" }, `Database disconnected`);
+  await bootstrap.shutdown()
   await disconnectRedis();
   log.info({ database: "redis" }, `Redis disconnected`);
 
