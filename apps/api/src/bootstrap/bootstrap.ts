@@ -10,31 +10,31 @@ type BootstrapOptions = {
 };
 
 export class Bootstrap {
-  public prismaService: Prisma;
-  public redisService: Redis;
-  public rabbitMQService: RabbitMQ;
+  public prisma: Prisma;
+  public redis: Redis;
+  public rabbitMQ: RabbitMQ;
 
   constructor({ postgresUrl, redisUrl, rabbitMqUrl }: BootstrapOptions) {
-    this.prismaService = new Prisma(postgresUrl);
-    this.redisService = new Redis(redisUrl);
-    this.rabbitMQService = new RabbitMQ(rabbitMqUrl);
+    this.prisma = new Prisma(postgresUrl);
+    this.redis = new Redis(redisUrl);
+    this.rabbitMQ = new RabbitMQ(rabbitMqUrl);
   }
 
   async initialise() {
-    await this.prismaService.connect();
+    await this.prisma.connect();
     log.info({ infra: "postgres" }, `postgres connected`);
-    await this.redisService.connect();
+    await this.redis.connect();
     log.info({ infra: "redis" }, `redis connected`);
-    await this.rabbitMQService.connect();
+    await this.rabbitMQ.connect();
     log.info({ infra: "rabbitmq" }, `rabbitmq connected`);
   }
 
   async shutdown() {
-    await this.prismaService.disconnect();
+    await this.prisma.disconnect();
     log.info({ infra: "postgres" }, `postgres disconnected`);
-    await this.redisService.disconnect();
+    await this.redis.disconnect();
     log.info({ infra: "redis" }, `redis disconnected`);
-    await this.rabbitMQService.disconnect();
+    await this.rabbitMQ.disconnect();
     log.info({ infra: "rabbitmq" }, `rabbitmq disconnected`);
   }
 }
