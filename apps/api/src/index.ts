@@ -1,6 +1,7 @@
 import { env } from "@/config/env.js";
 import { CreateApp } from "./app.js";
 import { createAppLogger } from "@archiq/logger";
+import { connectDatabase, disconnectDatabase } from "./db/prisma.js";
 
 async function StartServer() {
   const app = CreateApp();
@@ -9,7 +10,12 @@ async function StartServer() {
     production: env.NODE_ENV === "production",
   });
 
-  const server = app.listen(env.PORT, () => {
+  // Database Connection
+  await connectDatabase();
+  log.info(`Database Connected`);
+
+  // Server Initialisation
+  const server = app.listen(env.PORT, async () => {
     log.info(
       {
         port: env.PORT,
@@ -19,16 +25,20 @@ async function StartServer() {
     );
   });
 
-  process.on("SIGTERM", () => {
-    console.log("[server] SIGTERM — shutting down gracefully");
+  process.on("SIGTERM", async () => {
+    await disconnectDatabase();
+    log.info(`Database Connected`);
     server.close(() => {
+      log.info("SIGTERM — shutting down gracefully");
       process.exitCode = 0;
     });
   });
 
-  process.on("SIGINT", () => {
-    console.log("[server] SIGTERM — shutting down gracefully");
+  process.on("SIGINT", async () => {
+    await disconnectDatabase();
+    log.info(`Database Connected`);
     server.close(() => {
+      log.info("SIGTERM — shutting down gracefully");
       process.exitCode = 0;
     });
   });
