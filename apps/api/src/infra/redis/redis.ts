@@ -1,7 +1,8 @@
 import { log } from "@/config/logger.js";
+import { Infra } from "@/interface/infra.js";
 import { Redis as redis } from "ioredis";
 
-export class Redis {
+export class Redis implements Infra {
   public client: redis;
 
   constructor(url: string) {
@@ -10,20 +11,24 @@ export class Redis {
       maxRetriesPerRequest: null,
     });
 
+    this.client.on("connect", () => {
+      log.info({ infra: "redis" }, `redis connected`);
+    });
+
     this.client.on("ready", () => {
-      log.info("redis ready");
+      log.info({ infra: "redis" }, "redis ready");
     });
 
     this.client.on("error", (error) => {
-      log.error({ error }, "redis error");
+      log.error({ error, infra: "redis" }, "redis error");
     });
 
     this.client.on("reconnecting", () => {
-      log.warn("redis reconnecting");
+      log.warn({ infra: "redis" }, "redis reconnecting");
     });
 
     this.client.on("close", () => {
-      log.warn("redis connection closed");
+      log.warn({ infra: "redis" }, "redis connection closed");
     });
   }
 
@@ -34,5 +39,11 @@ export class Redis {
 
   async disconnect() {
     await this.client.quit();
+    log.info({ infra: "redis" }, `redis disconnected`);
+  }
+
+  async healthCheck() {
+    const result = await this.client.ping();
+    if (result !== "PONG") throw new Error("redis unhealthy");
   }
 }
