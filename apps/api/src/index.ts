@@ -6,7 +6,11 @@ import { Bootstrap } from "./bootstrap/bootstrap.js";
 
 async function StartServer() {
   // Bootstrap init
-  const bootstrap = new Bootstrap(env.DATABASE_URL, env.REDIS_URL);
+  const bootstrap = new Bootstrap({
+    postgresUrl: env.DATABASE_URL,
+    redisUrl: env.REDIS_URL,
+    rabbitMqUrl: env.RABBITMQ_URL,
+  });
   await bootstrap.initialise();
 
   // Server Initialisation
