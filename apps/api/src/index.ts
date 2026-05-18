@@ -1,50 +1,33 @@
 import { env } from "@/config/env.js";
-import { CreateApp } from "./app.js";
-import { createAppLogger } from "@archiq/logger";
-import { connectDatabase, disconnectDatabase } from "./db/prisma.js";
+import { CreateApp } from "@/app.js";
+import { connectDatabase, disconnectDatabase } from "@/db/prisma.js";
+import { connectRedis, disconnectRedis } from "@/db/redis.js";
+import { log } from "@/config/logger.js";
+import { gracefulShutdown } from "@/utils/shutdown.js";
 
 async function StartServer() {
-  const app = CreateApp();
-  const log = createAppLogger({
-    service: "api",
-    production: env.NODE_ENV === "production",
-  });
-
-  // Database Connection
+  // Postgres Connection
   await connectDatabase();
-  log.info(`Database Connected`);
+  log.info({ database: "postgres" }, "database connected");
+
+  // Redis Connection
+  await connectRedis();
+  log.info({ database: "redis" }, "redis connected");
 
   // Server Initialisation
-  const server = app.listen(env.PORT, async () => {
+  const app = CreateApp();
+  const server = app.listen(env.PORT, () => {
     log.info(
-      {
-        port: env.PORT,
-        url: `http://localhost:${env.PORT}`,
-      },
+      { port: env.PORT, url: `http://localhost:${env.PORT}` },
       `Server Started`,
     );
   });
 
-  process.on("SIGTERM", async () => {
-    await disconnectDatabase();
-    log.info(`Database Connected`);
-    server.close(() => {
-      log.info("SIGTERM — shutting down gracefully");
-      process.exitCode = 0;
-    });
-  });
-
-  process.on("SIGINT", async () => {
-    await disconnectDatabase();
-    log.info(`Database Connected`);
-    server.close(() => {
-      log.info("SIGTERM — shutting down gracefully");
-      process.exitCode = 0;
-    });
-  });
+  process.on("SIGTERM", () => gracefulShutdown("SIGTERM", server));
+  process.on("SIGINT", () => gracefulShutdown("SIGINT", server));
 }
 
-StartServer().catch((err) => {
-  console.error("[server] Fatal startup error", err);
+StartServer().catch((error) => {
+  log.fatal({ error }, `Fatal startup error `);
   process.exitCode = 1;
 });
