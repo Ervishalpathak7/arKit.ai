@@ -1,1 +1,11 @@
-{"root":["./src/app.ts","./src/index.ts","./src/config/env.ts","./src/config/index.ts","./src/error/index.ts","./src/utils/errorHandler.ts"],"version":"6.0.3"}
+{
+  "root": [
+    "./src/app.ts",
+    "./src/index.ts",
+    "./src/config/env.ts",
+    "./src/config/index.ts",
+    "./src/error/index.ts",
+    "./src/utils/errorHandler.ts"
+  ],
+  "version": "6.0.3"
+}
