@@ -15,6 +15,6 @@ export class Bootstrap {
 
   async shutdown() {
     await this.prismaService.disconnect();
-    log.info({ infra: "postgres" }, `Postgres Connected`);
+    log.info({ infra: "postgres" }, `Postgres disconnected`);
   }
 }
