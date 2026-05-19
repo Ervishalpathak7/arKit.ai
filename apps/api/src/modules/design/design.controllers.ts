@@ -12,7 +12,7 @@ export class DesignController {
     if (!prompt) throw new InvalidRequest("prompt", "Prompt is Required");
     const design = await this.service.createDesign({ prompt, authorId });
 
-    res.status(200).send({
+    res.status(201).send({
       message: "Design Created Successfully",
       data: { id: design.id },
     });

@@ -4,7 +4,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Infra } from "../interface.js";
 
 export class Prisma implements Infra {
-  public client: PrismaClient;
+  private client: PrismaClient;
 
   constructor(connectionString: string) {
     const adapter = new PrismaPg({ connectionString });

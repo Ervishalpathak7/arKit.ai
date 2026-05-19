@@ -14,7 +14,8 @@ async function StartServer() {
   await bootstrap.initialise();
 
   // Server Initialisation
-  const app = CreateApp(bootstrap.getPrismaClient());
+  const prismaClient = bootstrap.getPrismaClient();
+  const app = CreateApp({ prismaClient });
   const server = app.listen(env.PORT, () => {
     log.info({ port: env.PORT }, `server started`);
   });
