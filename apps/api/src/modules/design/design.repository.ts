@@ -1,13 +1,15 @@
 import { Prisma, PrismaClient } from "@/generated/prisma/client.js";
+import { GetAuthorDesignDTO } from "./design.dto.js";
+import { CreateDesignInput, DesignUpdateInput } from "./design.types.js";
 
 export class DesignRepository {
   constructor(private db: PrismaClient) {}
 
-  async create(data: Prisma.DesignCreateInput) {
+  async create(data: CreateDesignInput) {
     return this.db.design.create({ data });
   }
 
-  findByIdAndAuthor(id: string, authorId: string) {
+  findByIdAndAuthor({ id, authorId }: GetAuthorDesignDTO) {
     return this.db.design.findUnique({ where: { id, authorId } });
   }
 
@@ -21,7 +23,14 @@ export class DesignRepository {
     });
   }
 
-  async update(id: string, data: Prisma.DesignUpdateInput) {
-    return this.db.design.update({ where: { id }, data });
+  async update(id: string, authorId: string, data: DesignUpdateInput) {
+    return this.db.design.update({
+      where: { id, authorId },
+      data: {
+        status: data.status,
+        title: data.title,
+        body: data.body,
+      },
+    });
   }
 }
