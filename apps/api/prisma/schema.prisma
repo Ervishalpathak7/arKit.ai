@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id            String        @default(cuid())
+  id            String        @id @default(cuid())
   firstName     String?
   lastName      String?
   email         String        @unique
@@ -21,4 +21,21 @@ enum Plan {
   FREE 
   PRO
   MAX
+}
+
+model Design {
+  id          String          @id @default(cuid())
+  title       String?
+  body        Json?
+  authorId    String
+  prompt      String
+  status      DesignStatus    @default(PROCESSING)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+enum DesignStatus {
+  PROCESSING
+  READY
+  FAILED
 }
