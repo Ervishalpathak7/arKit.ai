@@ -1,5 +1,5 @@
 import { log } from "@/config/logger.js";
-import { Infra } from "@/interface/infra.js";
+import { Infra } from "../interface.js";
 import { Redis as redis } from "ioredis";
 
 export class Redis implements Infra {

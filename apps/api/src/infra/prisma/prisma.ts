@@ -1,7 +1,7 @@
 import { log } from "@/config/logger.js";
 import { PrismaClient } from "@/generated/prisma/client.js";
-import { Infra } from "@/interface/infra.js";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { Infra } from "../interface.js";
 
 export class Prisma implements Infra {
   public client: PrismaClient;
