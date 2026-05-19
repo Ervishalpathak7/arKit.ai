@@ -4,7 +4,7 @@ import { Channel, ChannelModel, connect } from "amqplib";
 
 export class RabbitMQ implements Infra {
   private connection!: ChannelModel;
-  public channel!: Channel;
+  private channel!: Channel;
 
   constructor(private readonly url: string) {}
 
@@ -18,6 +18,10 @@ export class RabbitMQ implements Infra {
     await this.channel.close();
     await this.connection.close();
     log.info({ infra: "rabbitmq" }, `rabbitmq disconnected`);
+  }
+
+  getChannel() {
+    return this.channel;
   }
 
   async healthCheck() {

@@ -3,7 +3,7 @@ import { Infra } from "../interface.js";
 import { Redis as redis } from "ioredis";
 
 export class Redis implements Infra {
-  public client: redis;
+  private client: redis;
 
   constructor(url: string) {
     this.client = new redis(url, {
@@ -40,6 +40,10 @@ export class Redis implements Infra {
   async disconnect() {
     await this.client.quit();
     log.info({ infra: "redis" }, `redis disconnected`);
+  }
+
+  getClient() {
+    return this.client;
   }
 
   async healthCheck() {

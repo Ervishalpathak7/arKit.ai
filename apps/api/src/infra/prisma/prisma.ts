@@ -22,6 +22,10 @@ export class Prisma implements Infra {
     log.info({ infra: "postgres" }, `postgres disconnected`);
   }
 
+  getClient() {
+    return this.client;
+  }
+
   async healthCheck() {
     await this.client.$queryRaw`SELECT 1`;
   }

@@ -1,8 +1,7 @@
-import { log } from "@/config/logger.js";
+import { Infra } from "@/infra/interface.js";
 import { Prisma } from "@/infra/prisma/prisma.js";
 import { RabbitMQ } from "@/infra/queue/rabbitmq.js";
 import { Redis } from "@/infra/redis/redis.js";
-import { Infra } from "@/interface/infra.js";
 
 type BootstrapOptions = {
   postgresUrl: string;
@@ -12,13 +11,15 @@ type BootstrapOptions = {
 
 export class Bootstrap {
   private readonly infra: Infra[];
+  public prisma: Prisma;
+  public redis: Redis;
+  public rabbitMq: RabbitMQ;
 
   constructor({ postgresUrl, redisUrl, rabbitMqUrl }: BootstrapOptions) {
-    this.infra = [
-      new Prisma(postgresUrl),
-      new Redis(redisUrl),
-      new RabbitMQ(rabbitMqUrl),
-    ];
+    this.prisma = new Prisma(postgresUrl);
+    this.redis = new Redis(redisUrl);
+    this.rabbitMq = new RabbitMQ(rabbitMqUrl);
+    this.infra = [this.prisma, this.redis, this.rabbitMq];
   }
 
   async initialise() {
@@ -31,6 +32,18 @@ export class Bootstrap {
     for (const service of this.infra.reverse()) {
       await service.disconnect();
     }
+  }
+
+  getPrismaClient() {
+    return this.prisma.getClient();
+  }
+
+  getRedisClient() {
+    return this.redis.getClient();
+  }
+
+  getRabbitMqChannel() {
+    return this.rabbitMq.getChannel();
   }
 
   async healthCheck() {

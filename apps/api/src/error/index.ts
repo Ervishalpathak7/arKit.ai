@@ -17,3 +17,11 @@ export class AppError extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 }
+
+export class InvalidRequest extends AppError {
+  public readonly field: string;
+  constructor(field: string, message: string) {
+    super(message, 401, "INVALID_REQUEST");
+    this.field = field;
+  }
+}
