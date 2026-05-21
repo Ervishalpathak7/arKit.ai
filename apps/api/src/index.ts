@@ -15,7 +15,8 @@ async function StartServer() {
 
   // Server Initialisation
   const prismaClient = bootstrap.getPrismaClient();
-  const app = CreateApp({ prismaClient });
+  const redisClient = bootstrap.getRedisClient();
+  const app = CreateApp({ prismaClient, redisClient });
   const server = app.listen(env.PORT, () => {
     log.info({ port: env.PORT }, `server started`);
   });

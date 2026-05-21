@@ -13,6 +13,7 @@ export const errorHandler: ErrorRequestHandler = async (
     err instanceof AppError ? err.message : "Internal Server Error";
   const statusCode = err instanceof AppError ? err.statusCode : 500;
 
+
   // Sending the Response
   res.status(statusCode).json({
     error,

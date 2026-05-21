@@ -7,6 +7,7 @@ export type DesignUpdateInput = {
 };
 
 export type CreateDesignInput = {
+  id: string;
   prompt: string;
   authorId: string;
 };

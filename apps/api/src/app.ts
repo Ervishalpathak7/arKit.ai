@@ -1,17 +1,16 @@
-import express from "express";
-import type { Application } from "express";
-import { errorHandler } from "@/utils/errorHandler.js";
-import { register } from "@/observability/metrics.js";
-import { PrismaClient } from "./generated/prisma/client.js";
 import helmet from "helmet";
-import { DesignRouter } from "./modules/design/design.routes.js";
+import express from "express";
 import { env } from "./config/env.js";
+import type { Application } from "express";
+import { AppDependencies } from "./types/index.js";
+import { register } from "@/observability/metrics.js";
+import { errorHandler } from "@/utils/errorHandler.js";
+import { DesignRouter } from "./modules/design/design.routes.js";
 
-type AppDependencies = {
-  prismaClient: PrismaClient;
-};
-
-export function CreateApp({ prismaClient }: AppDependencies): Application {
+export function CreateApp({
+  prismaClient,
+  redisClient,
+}: AppDependencies): Application {
   const app = express();
 
   // middlewares
@@ -20,7 +19,7 @@ export function CreateApp({ prismaClient }: AppDependencies): Application {
   app.use(express.urlencoded({ limit: "16kb", extended: true }));
 
   // routes
-  const designRouter = DesignRouter(prismaClient);
+  const designRouter = DesignRouter({ prismaClient, redisClient });
   app.use(designRouter);
 
   if (env.NODE_ENV !== "test") {

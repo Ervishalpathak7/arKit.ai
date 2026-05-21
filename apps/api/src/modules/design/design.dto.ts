@@ -5,6 +5,13 @@ export type GetAuthorDesignDTO = {
   authorId: string;
 };
 
+export type CreateDesignDTO = {
+  prompt : string,
+  authorId : string,
+  requestHash : string
+  idempotencyKey : string
+}
+
 export type UpdateDesignDTO = {
   id: string;
   authorId: string;

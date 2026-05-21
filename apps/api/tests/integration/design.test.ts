@@ -4,38 +4,71 @@ import { describe, it, expect, afterAll, beforeAll, beforeEach } from "vitest";
 import { Prisma } from "@/infra/prisma/prisma.js";
 import { env } from "@/config/env.js";
 import { Application } from "express";
+import { Redis } from "@/infra/redis/redis.js";
+import { randomUUID } from "crypto";
 
-describe("Design Generate Api", () => {
+describe("Design Api", () => {
   const prisma = new Prisma(env.DATABASE_URL);
+  const redis = new Redis(env.REDIS_URL);
+  const randomId = randomUUID();
   let app: Application;
 
   beforeAll(async () => {
     await prisma.connect();
-    app = CreateApp({ prismaClient: prisma.getClient() });
+    await redis.connect();
+    app = CreateApp({
+      prismaClient: prisma.getClient(),
+      redisClient: redis.getClient(),
+    });
   });
 
   beforeEach(async () => {
     await prisma.getClient().design.deleteMany();
+    await redis.getClient().flushall();
   });
 
   afterAll(async () => {
     await prisma.disconnect();
+    await redis.disconnect();
   });
 
-  it("Should create design & return design Id", async () => {
-    const response = await request(app).post("/api/design/generate").send({
-      prompt: "testing prompt",
-    });
+  it("Should give invalid request error", async () => {
+    const response = await request(app).post("/api/design/generate").send();
+    expect(response.status).toBe(401);
+    expect(response.body.error).toBe("INVALID_REQUEST");
+  });
 
-    expect(response.status).toBe(201);
+  it("should give invalid request error", async () => {
+    const response = await request(app)
+      .post("/api/design/generate")
+      .send({ prompt: "testing prompt  ${randomId}" });
+    expect(response.status).toBe(401);
+    expect(response.body.error).toBe("INVALID_REQUEST");
+  });
+
+  it("Should give invalid request error", async () => {
+    const response = await request(app)
+      .post("/api/design/generate")
+      .set("idempotency-key", randomId)
+      .send();
+
+    expect(response.status).toBe(401);
+    expect(response.body.error).toBe("INVALID_REQUEST");
+  });
+
+  it("should generate a design and give designId", async () => {
+    const response = await request(app)
+      .post("/api/design/generate")
+      .set("idempotency-key", randomId)
+      .send({ prompt: `testing prompt ${randomId}` });
+
+    expect(response.status).toBe(202);
     expect(response.body.data.id).toBeDefined();
 
-    const design = await prisma.getClient().design.findUnique({
-      where: {
-        id: response.body.data.id,
-      },
-    });
+    const design = await prisma
+      .getClient()
+      .design.findUnique({ where: { id: response.body.data.id } });
 
-    expect(design).not.toBeNull();
+    expect(design).not.toBe(null);
   });
 });

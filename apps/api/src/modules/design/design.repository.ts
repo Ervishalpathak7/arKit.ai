@@ -1,19 +1,19 @@
-import { Prisma, PrismaClient } from "@/generated/prisma/client.js";
+import { PrismaClient } from "@/generated/prisma/client.js";
 import { GetAuthorDesignDTO } from "./design.dto.js";
 import { CreateDesignInput, DesignUpdateInput } from "./design.types.js";
 
 export class DesignRepository {
   constructor(private db: PrismaClient) {}
 
-  async create(data: CreateDesignInput) {
+  create = async (data: CreateDesignInput) => {
     return this.db.design.create({ data });
-  }
+  };
 
-  findByIdAndAuthor({ id, authorId }: GetAuthorDesignDTO) {
+  findByIdAndAuthor = async ({ id, authorId }: GetAuthorDesignDTO) => {
     return this.db.design.findUnique({ where: { id, authorId } });
-  }
+  };
 
-  async findByAuthor(authorId: string, page: number, limit: number) {
+  findByAuthor = async (authorId: string, page: number, limit: number) => {
     const skip = (page - 1) * limit;
     return this.db.design.findMany({
       where: { authorId },
@@ -21,9 +21,9 @@ export class DesignRepository {
       take: limit,
       orderBy: { createdAt: "desc" },
     });
-  }
+  };
 
-  async update(id: string, authorId: string, data: DesignUpdateInput) {
+  update = async (id: string, authorId: string, data: DesignUpdateInput) => {
     return this.db.design.update({
       where: { id, authorId },
       data: {
@@ -32,5 +32,14 @@ export class DesignRepository {
         body: data.body,
       },
     });
-  }
+  };
+
+  delete = async (id: string, authorId: string) => {
+    return this.db.design.delete({
+      where: {
+        id,
+        authorId,
+      },
+    });
+  };
 }
