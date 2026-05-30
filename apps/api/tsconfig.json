@@ -2,10 +2,11 @@
   "extends": "@archiq/typescript-config/base.json",
   "compilerOptions": {
     "outDir": "./dist",
+    "rootDir": "src",
     "paths": {
       "@/*": ["./src/*"]
     }
   },
 
-  "include": ["src", "tests", "vitest.config.ts", "prisma.config.ts"]
+  "include": ["src"]
 }

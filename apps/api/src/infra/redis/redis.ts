@@ -11,24 +11,20 @@ export class Redis implements Infra {
       maxRetriesPerRequest: null,
     });
 
-    this.client.on("connect", () => {
-      log.info({ infra: "redis" }, `redis connected`);
-    });
-
     this.client.on("ready", () => {
-      log.info({ infra: "redis" }, "redis ready");
+      log.info({ type: "Redis" }, "Redis ready");
     });
 
     this.client.on("error", (error) => {
-      log.error({ error, infra: "redis" }, "redis error");
+      log.error({ error, type: "Redis" }, "Redis error");
     });
 
     this.client.on("reconnecting", () => {
-      log.warn({ infra: "redis" }, "redis reconnecting");
+      log.warn({ type: "Redis" }, "Redis reconnecting");
     });
 
     this.client.on("close", () => {
-      log.warn({ infra: "redis" }, "redis connection closed");
+      log.warn({ type: "Redis" }, "Redis connection closed");
     });
   }
 
@@ -39,7 +35,6 @@ export class Redis implements Infra {
 
   async disconnect() {
     await this.client.quit();
-    log.info({ infra: "redis" }, `redis disconnected`);
   }
 
   getClient() {

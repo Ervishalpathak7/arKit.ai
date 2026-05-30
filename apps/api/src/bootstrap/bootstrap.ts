@@ -1,3 +1,4 @@
+import { log } from "@/config/logger.js";
 import { Infra } from "@/infra/interface.js";
 import { Prisma } from "@/infra/prisma/prisma.js";
 import { RabbitMQ } from "@/infra/queue/rabbitmq.js";
@@ -25,12 +26,20 @@ export class Bootstrap {
   async initialise() {
     for (const service of this.infra) {
       await service.connect();
+      log.info(
+        { type: service.constructor.name },
+        `${service.constructor.name} : connected`,
+      );
     }
   }
 
   async shutdown() {
     for (const service of this.infra.reverse()) {
       await service.disconnect();
+      log.warn(
+        { type: service.constructor.name },
+        `${service.constructor.name} : disconnected`,
+      );
     }
   }
 

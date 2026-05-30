@@ -1,4 +1,3 @@
-import { log } from "@/config/logger.js";
 import { PrismaClient } from "@/generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Infra } from "../interface.js";
@@ -14,12 +13,10 @@ export class Prisma implements Infra {
   async connect() {
     await this.client.$connect();
     await this.client.$queryRaw`SELECT 1`;
-    log.info({ infra: "postgres" }, `postgres connected`);
   }
 
   async disconnect() {
     await this.client.$disconnect();
-    log.info({ infra: "postgres" }, `postgres disconnected`);
   }
 
   getClient() {
