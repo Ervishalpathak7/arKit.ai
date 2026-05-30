@@ -9,14 +9,18 @@ import { createId } from "@paralleldrive/cuid2";
 import { AppError } from "@/error/index.js";
 import { Design, DesignStatus } from "@/generated/prisma/client.js";
 import { IdempotencyRecord } from "@/types/index.js";
+import { RabbitMqService } from "@/services/queue/index.js";
+import { log } from "@/config/logger.js";
 
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
+const DESIGN_QUEUE = "design-queue";
 
 export class DesignService {
   constructor(
     private repo: DesignRepository,
     private redisService: RedisService,
+    private queueService: RabbitMqService,
   ) {}
 
   async createDesign(data: CreateDesignDTO) {
@@ -61,6 +65,27 @@ export class DesignService {
     }
 
     try {
+      await this.queueService.produce(
+        DESIGN_QUEUE,
+        JSON.stringify({
+          type: "design-generation",
+          id,
+        }),
+      );
+
+      log.info(
+        {
+          type: "queue",
+          id,
+        },
+        `design generation queued`,
+      );
+    } catch (error) {
+      await this.repo.delete(design.id, data.authorId);
+      throw new AppError("design queue failed", 500, "RABBITMQ_FAILURE");
+    }
+
+    try {
       await this.redisService.setData(
         redisKey,
         JSON.stringify({
@@ -72,12 +97,12 @@ export class DesignService {
       );
       return { id: design.id, status: design.status };
     } catch (error) {
-      await this.repo.delete(design.id, data.authorId);
-      await this.redisService.deleteData(redisKey);
-      throw new AppError(
-        "design creation failed in redis ",
-        500,
-        "REDIS_ERROR",
+      log.error(
+        {
+          type: "redis",
+          error,
+        },
+        `redis data saving failed`,
       );
     }
   }

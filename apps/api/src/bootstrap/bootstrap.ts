@@ -34,18 +34,6 @@ export class Bootstrap {
     }
   }
 
-  getPrismaClient() {
-    return this.prisma.getClient();
-  }
-
-  getRedisClient() {
-    return this.redis.getClient();
-  }
-
-  getRabbitMqChannel() {
-    return this.rabbitMq.getChannel();
-  }
-
   async healthCheck() {
     for (const service of this.infra) {
       await service.healthCheck();

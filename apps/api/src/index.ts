@@ -14,9 +14,11 @@ async function StartServer() {
   await bootstrap.initialise();
 
   // Server Initialisation
-  const prismaClient = bootstrap.getPrismaClient();
-  const redisClient = bootstrap.getRedisClient();
-  const app = CreateApp({ prismaClient, redisClient });
+  const prisma = bootstrap.prisma;
+  const redis = bootstrap.redis;
+  const rabbitMq = bootstrap.rabbitMq;
+
+  const app = CreateApp({ prisma, redis, rabbitMq });
   const server = app.listen(env.PORT, () => {
     log.info({ port: env.PORT }, `server started`);
   });

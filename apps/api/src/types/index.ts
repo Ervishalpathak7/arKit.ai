@@ -1,5 +1,14 @@
 import { PrismaClient } from "@/generated/prisma/client.js";
-import type { Redis } from "ioredis";
+import { Prisma } from "@/infra/prisma/prisma.js";
+import { RabbitMQ } from "@/infra/queue/rabbitmq.js";
+import { Redis } from "@/infra/redis/redis.js";
+import type { Redis as redisClient } from "ioredis";
+
+export type AppDependencies = {
+  prisma: Prisma;
+  redis: Redis;
+  rabbitMq: RabbitMQ;
+};
 
 export type IdempotencyRecord = {
   id: string;
@@ -9,14 +18,10 @@ export type IdempotencyRecord = {
 
 export type DesignRouterOptions = {
   prismaClient: PrismaClient;
-  redisClient: Redis;
+  redisClient: redisClient;
+  rabbitMq: RabbitMQ;
 };
 
-
-export type AppDependencies = {
-  prismaClient: PrismaClient;
-  redisClient: Redis;
-};
 
 declare global {
   namespace Express {

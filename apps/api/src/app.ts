@@ -8,8 +8,9 @@ import { errorHandler } from "@/utils/errorHandler.js";
 import { DesignRouter } from "./modules/design/design.routes.js";
 
 export function CreateApp({
-  prismaClient,
-  redisClient,
+  prisma,
+  redis,
+  rabbitMq,
 }: AppDependencies): Application {
   const app = express();
 
@@ -18,8 +19,11 @@ export function CreateApp({
   app.use(express.json({ limit: "16kb" }));
   app.use(express.urlencoded({ limit: "16kb", extended: true }));
 
+  const prismaClient = prisma.getClient();
+  const redisClient = redis.getClient();
+
   // routes
-  const designRouter = DesignRouter({ prismaClient, redisClient });
+  const designRouter = DesignRouter({ prismaClient, redisClient, rabbitMq });
   app.use(designRouter);
 
   if (env.NODE_ENV !== "test") {
