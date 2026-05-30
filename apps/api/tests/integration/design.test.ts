@@ -6,19 +6,23 @@ import { env } from "@/config/env.js";
 import { Application } from "express";
 import { Redis } from "@/infra/redis/redis.js";
 import { randomUUID } from "crypto";
+import { RabbitMQ } from "@/infra/queue/rabbitmq.js";
 
 describe("Design Api", () => {
   const prisma = new Prisma(env.DATABASE_URL);
   const redis = new Redis(env.REDIS_URL);
+  const rabbitMq = new RabbitMQ(env.RABBITMQ_URL);
   const randomId = randomUUID();
   let app: Application;
 
   beforeAll(async () => {
     await prisma.connect();
     await redis.connect();
+    await rabbitMq.connect();
     app = CreateApp({
-      prismaClient: prisma.getClient(),
-      redisClient: redis.getClient(),
+      prisma,
+      redis,
+      rabbitMq,
     });
   });
 
@@ -30,6 +34,7 @@ describe("Design Api", () => {
   afterAll(async () => {
     await prisma.disconnect();
     await redis.disconnect();
+    await rabbitMq.disconnect();
   });
 
   it("Should give invalid request error", async () => {
