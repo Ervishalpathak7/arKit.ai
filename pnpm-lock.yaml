@@ -18,7 +18,32 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
-  apps/ai: {}
+  apps/ai:
+    devDependencies:
+      '@archiq/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@archiq/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/express':
+        specifier: ^5.0.6
+        version: 5.0.6
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      '@types/pg':
+        specifier: ^8.20.0
+        version: 8.20.0
+      npm-run-all:
+        specifier: ^4.1.5
+        version: 4.1.5
+      tsc-alias:
+        specifier: ^1.8.17
+        version: 1.8.17
+      typescipt:
+        specifier: ^1.0.0
+        version: 1.0.0
 
   apps/api:
     dependencies:
@@ -2871,6 +2896,9 @@ packages:
   typed-array-length@1.0.7:
     resolution: {integrity: sha512-3KS2b+kL7fsuk/eJZ7EQdnEmQoaho/r6KUef7hxvltNA5DR8NAUM+8wJMbJyZ4G9/7i3v5zPBIMN5aybAh2/Jg==}
     engines: {node: '>= 0.4'}
+
+  typescipt@1.0.0:
+    resolution: {integrity: sha512-Rgg7DtWh0c0oJPz2p48B0hlINIkE5zxU5i+dGctkoiKjIu6twl0HXWzoy+mvp9bQfLJGx70zYuN6GK0S/x5Kxw==}
 
   typescript-eslint@8.50.0:
     resolution: {integrity: sha512-Q1/6yNUmCpH94fbgMUMg2/BSAr/6U7GBk61kZTv1/asghQOWOjTlp9K8mixS5NcJmm2creY+UFfGeW/+OcA64A==}
@@ -5887,6 +5915,8 @@ snapshots:
       is-typed-array: 1.1.15
       possible-typed-array-names: 1.1.0
       reflect.getprototypeof: 1.0.10
+
+  typescipt@1.0.0: {}
 
   typescript-eslint@8.50.0(eslint@9.39.1(jiti@2.7.0))(typescript@5.9.3):
     dependencies:
