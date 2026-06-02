@@ -1,5 +1,5 @@
 {
-  "name": "@archiq/logger",
+  "name": "@archiq/log",
   "version": "0.0.0",
   "private": true,
   "main": "./dist/index.js",

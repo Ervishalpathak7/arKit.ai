@@ -1,4 +1,4 @@
-import { createAppLogger } from "@archiq/logger";
+import { createAppLogger } from "@archiq/log";
 import { env } from "./env.js";
 
 export const log: ReturnType<typeof createAppLogger> = createAppLogger({

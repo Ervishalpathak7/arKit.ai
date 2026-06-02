@@ -20,9 +20,9 @@ importers:
 
   apps/ai:
     dependencies:
-      '@archiq/logger':
+      '@archiq/log':
         specifier: workspace:*
-        version: link:../../packages/logger
+        version: link:../../packages/log
       '@paralleldrive/cuid2':
         specifier: ^3.3.0
         version: 3.3.0
@@ -84,9 +84,9 @@ importers:
 
   apps/api:
     dependencies:
-      '@archiq/logger':
+      '@archiq/log':
         specifier: workspace:*
-        version: link:../../packages/logger
+        version: link:../../packages/log
       '@paralleldrive/cuid2':
         specifier: ^3.3.0
         version: 3.3.0
@@ -234,7 +234,7 @@ importers:
         specifier: ^8.50.0
         version: 8.50.0(eslint@9.39.1(jiti@2.7.0))(typescript@5.9.3)
 
-  packages/logger:
+  packages/log:
     dependencies:
       pino:
         specifier: ^10.3.1
