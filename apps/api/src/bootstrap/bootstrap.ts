@@ -1,8 +1,8 @@
 import { log } from "@/config/logger.js";
-import { Infra } from "@/infra/interface.js";
-import { Prisma } from "@/infra/prisma/prisma.js";
+import { Prisma } from "@archiq/prisma";
 import { RabbitMQ } from "@/infra/queue/rabbitmq.js";
 import { Redis } from "@/infra/redis/redis.js";
+import { Infra } from "@archiq/types";
 
 type BootstrapOptions = {
   postgresUrl: string;

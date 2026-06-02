@@ -127,6 +127,9 @@ importers:
       '@archiq/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@archiq/prisma':
+        specifier: workspace:*
+        version: link:../../packages/prisma
       '@archiq/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -248,6 +251,49 @@ importers:
       '@archiq/config':
         specifier: workspace:*
         version: link:../config
+
+  packages/prisma:
+    dependencies:
+      '@prisma/adapter-pg':
+        specifier: ^7.8.0
+        version: 7.8.0
+      '@prisma/client':
+        specifier: ^7.8.0
+        version: 7.8.0(prisma@7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@6.0.3))(typescript@6.0.3)
+    devDependencies:
+      '@archiq/config':
+        specifier: workspace:*
+        version: link:../config
+      '@archiq/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@archiq/types':
+        specifier: workspace:*
+        version: link:../types
+      '@types/pg':
+        specifier: ^8.20.0
+        version: 8.20.0
+      prisma:
+        specifier: 7.8.0
+        version: 7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@6.0.3)
+
+  packages/queue:
+    devDependencies:
+      '@archiq/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@archiq/types':
+        specifier: workspace:*
+        version: link:../types
+
+  packages/redis:
+    devDependencies:
+      '@archiq/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@archiq/types':
+        specifier: workspace:*
+        version: link:../types
 
   packages/types:
     dependencies:

@@ -2,14 +2,25 @@
   "name": "@archiq/prisma",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "echo 'Add dev script here'",
-    "build": "echo 'Add build script here'",
-    "test": "echo 'Add test script here'",
-    "lint": "echo 'Add lint script here'"
+    "build": "tsc && cp -r src/generated dist/generated"
+  },
+  "exports": {
+    ".": {
+      "default": "./dist/index.js",
+      "types": "./dist/index.d.js"
+    }
   },
   "devDependencies": {
     "@archiq/eslint-config": "workspace:*",
-    "@archiq/types": "workspace:*"
+    "@archiq/types": "workspace:*",
+    "@archiq/config": "workspace:*",
+    "@types/pg": "^8.20.0",
+    "prisma": "7.8.0"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0"
   }
 }

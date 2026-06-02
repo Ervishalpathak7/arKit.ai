@@ -1,6 +1,7 @@
-import { PrismaClient } from "@/generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Infra } from "@archiq/types";
+import { PrismaClient } from "./generated/prisma/client.js";
+
 export class Prisma implements Infra {
   private client: PrismaClient;
 
@@ -26,3 +27,5 @@ export class Prisma implements Infra {
     await this.client.$queryRaw`SELECT 1`;
   }
 }
+
+export { PrismaClient };

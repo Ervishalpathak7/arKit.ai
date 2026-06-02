@@ -1,5 +1,5 @@
-import { PrismaClient } from "@/generated/prisma/client.js";
-import { Prisma } from "@/infra/prisma/prisma.js";
+import { PrismaClient } from "@archiq/prisma";
+import { Prisma } from "@archiq/prisma";
 import { RabbitMQ } from "@/infra/queue/rabbitmq.js";
 import { Redis } from "@/infra/redis/redis.js";
 import type { Redis as redisClient } from "ioredis";
