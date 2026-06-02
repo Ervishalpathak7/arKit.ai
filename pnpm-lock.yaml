@@ -241,6 +241,12 @@ importers:
       '@archiq/config':
         specifier: workspace:*
         version: link:../config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
 
   packages/log:
     dependencies:
