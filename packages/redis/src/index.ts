@@ -29,3 +29,5 @@ export class Redis implements Infra {
     if (result !== "PONG") throw new Error("redis unhealthy");
   }
 }
+
+export { redis as RedisClient };

@@ -27,3 +27,6 @@ export class RabbitMQ implements Infra {
     await this.channel.checkQueue("health-check");
   }
 }
+
+export { connect };
+export type { Channel, ChannelModel };

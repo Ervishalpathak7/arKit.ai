@@ -1,10 +1,10 @@
 import { IdempotencyRecord } from "@/types/index.js";
-import { Redis } from "ioredis";
+import { RedisClient } from "@archiq/redis";
 
 const DEFAULT_IDEMPOTANCY_KEY_DURATION = 300;
 
 export class RedisService {
-  constructor(private redisClient: Redis) {}
+  constructor(private redisClient: RedisClient) {}
 
   setIdempotencyKey = async (key: string, payload: IdempotencyRecord) => {
     return this.redisClient.set(

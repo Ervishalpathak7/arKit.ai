@@ -1,5 +1,4 @@
-import { RabbitMQ } from "@/infra/queue/rabbitmq.js";
-import { Channel, Replies } from "amqplib";
+import { Channel, RabbitMQ } from "@archiq/queue";
 
 export class RabbitMqService {
   private channel: Channel;

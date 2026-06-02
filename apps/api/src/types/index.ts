@@ -1,8 +1,7 @@
 import { PrismaClient } from "@archiq/prisma";
 import { Prisma } from "@archiq/prisma";
-import { RabbitMQ } from "@/infra/queue/rabbitmq.js";
-import { Redis } from "@archiq/redis";
-import type { Redis as redisClient } from "ioredis";
+import { RabbitMQ } from "@archiq/queue";
+import { Redis, RedisClient } from "@archiq/redis";
 
 export type AppDependencies = {
   prisma: Prisma;
@@ -18,7 +17,7 @@ export type IdempotencyRecord = {
 
 export type DesignRouterOptions = {
   prismaClient: PrismaClient;
-  redisClient: redisClient;
+  redisClient: RedisClient;
   rabbitMq: RabbitMQ;
 };
 
