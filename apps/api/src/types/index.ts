@@ -22,7 +22,6 @@ export type DesignRouterOptions = {
   rabbitMq: RabbitMQ;
 };
 
-
 declare global {
   namespace Express {
     interface Request {

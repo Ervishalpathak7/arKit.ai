@@ -1,5 +1,5 @@
 import { log } from "@/config/logger.js";
-import { Infra } from "../interface.js";
+import { Infra } from "@archiq/types";
 import { Redis as redis } from "ioredis";
 
 export class Redis implements Infra {

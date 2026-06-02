@@ -1,7 +1,6 @@
 import { PrismaClient } from "@/generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { Infra } from "../interface.js";
-
+import { Infra } from "@archiq/types";
 export class Prisma implements Infra {
   private client: PrismaClient;
 
