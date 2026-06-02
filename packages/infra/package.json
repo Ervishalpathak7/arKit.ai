@@ -1,0 +1,11 @@
+{
+  "name": "@archiq/infra",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@archiq/typescript-config": "workspace:*"
+  }
+}
