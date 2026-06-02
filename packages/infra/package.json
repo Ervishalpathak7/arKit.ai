@@ -6,6 +6,6 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@archiq/typescript-config": "workspace:*"
+    "@archiq/config": "workspace:*"
   }
 }

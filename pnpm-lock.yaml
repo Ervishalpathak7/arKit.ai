@@ -57,12 +57,12 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
+      '@archiq/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@archiq/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
-      '@archiq/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
@@ -121,12 +121,12 @@ importers:
         specifier: ^4.4.3
         version: 4.4.3
     devDependencies:
+      '@archiq/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@archiq/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
-      '@archiq/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
       '@types/express':
         specifier: ^5.0.6
         version: 5.0.6
@@ -176,12 +176,12 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
     devDependencies:
+      '@archiq/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@archiq/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
-      '@archiq/typescript-config':
-        specifier: workspace:*
-        version: link:../../packages/typescript-config
       '@types/node':
         specifier: ^22.15.3
         version: 22.15.3
@@ -197,6 +197,8 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
+
+  packages/config: {}
 
   packages/eslint-config:
     devDependencies:
@@ -234,6 +236,12 @@ importers:
         specifier: ^8.50.0
         version: 8.50.0(eslint@9.39.1(jiti@2.7.0))(typescript@5.9.3)
 
+  packages/infra:
+    devDependencies:
+      '@archiq/config':
+        specifier: workspace:*
+        version: link:../config
+
   packages/log:
     dependencies:
       pino:
@@ -243,11 +251,9 @@ importers:
         specifier: ^13.1.3
         version: 13.1.3
     devDependencies:
-      '@archiq/typescript-config':
+      '@archiq/config':
         specifier: workspace:*
-        version: link:../typescript-config
-
-  packages/typescript-config: {}
+        version: link:../config
 
   packages/ui:
     dependencies:
@@ -258,12 +264,12 @@ importers:
         specifier: ^19.2.0
         version: 19.2.0(react@19.2.0)
     devDependencies:
+      '@archiq/config':
+        specifier: workspace:*
+        version: link:../config
       '@archiq/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
-      '@archiq/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
       '@types/node':
         specifier: ^22.15.3
         version: 22.15.3

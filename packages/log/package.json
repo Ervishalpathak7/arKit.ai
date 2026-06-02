@@ -14,7 +14,7 @@
     "build": "tsc"
   },
   "devDependencies": {
-    "@archiq/typescript-config": "workspace:*"
+    "@archiq/config": "workspace:*"
   },
   "dependencies": {
     "pino": "^10.3.1",

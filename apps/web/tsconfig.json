@@ -1,5 +1,5 @@
 {
-  "extends": "@archiq/typescript-config/nextjs.json",
+  "extends": "@archiq/config/typescript/nextjs.json",
   "compilerOptions": {
     "plugins": [
       {

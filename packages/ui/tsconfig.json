@@ -1,5 +1,5 @@
 {
-  "extends": "@archiq/typescript-config/react-library.json",
+  "extends": "@archiq/config/typescript/react-library.json",
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": "src",
