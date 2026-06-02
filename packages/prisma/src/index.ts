@@ -1,6 +1,13 @@
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Infra } from "@archiq/types";
-import { PrismaClient } from "./generated/prisma/client.js";
+import {
+  PrismaClient,
+  Design,
+  User,
+  DesignStatus,
+  Plan,
+  Prisma as prisma,
+} from "./generated/prisma/client.js";
 
 export class Prisma implements Infra {
   private client: PrismaClient;
@@ -28,4 +35,6 @@ export class Prisma implements Infra {
   }
 }
 
-export { PrismaClient };
+export { PrismaClient, DesignStatus, Plan };
+export type { Design, User };
+export type InputJsonValue = prisma.InputJsonValue;

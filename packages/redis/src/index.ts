@@ -1,4 +1,3 @@
-import { log } from "@/config/logger.js";
 import { Infra } from "@archiq/types";
 import { Redis as redis } from "ioredis";
 
@@ -9,22 +8,6 @@ export class Redis implements Infra {
     this.client = new redis(url, {
       lazyConnect: true,
       maxRetriesPerRequest: null,
-    });
-
-    this.client.on("ready", () => {
-      log.info({ type: "Redis" }, "Redis ready");
-    });
-
-    this.client.on("error", (error) => {
-      log.error({ error, type: "Redis" }, "Redis error");
-    });
-
-    this.client.on("reconnecting", () => {
-      log.warn({ type: "Redis" }, "Redis reconnecting");
-    });
-
-    this.client.on("close", () => {
-      log.warn({ type: "Redis" }, "Redis connection closed");
     });
   }
 

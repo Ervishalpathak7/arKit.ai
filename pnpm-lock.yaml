@@ -130,6 +130,9 @@ importers:
       '@archiq/prisma':
         specifier: workspace:*
         version: link:../../packages/prisma
+      '@archiq/redis':
+        specifier: workspace:*
+        version: link:../../packages/redis
       '@archiq/types':
         specifier: workspace:*
         version: link:../../packages/types
@@ -259,7 +262,7 @@ importers:
         version: 7.8.0
       '@prisma/client':
         specifier: ^7.8.0
-        version: 7.8.0(prisma@7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@6.0.3))(typescript@6.0.3)
+        version: 7.8.0(prisma@7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3))(typescript@5.9.3)
     devDependencies:
       '@archiq/config':
         specifier: workspace:*
@@ -275,7 +278,7 @@ importers:
         version: 8.20.0
       prisma:
         specifier: 7.8.0
-        version: 7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@6.0.3)
+        version: 7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
 
   packages/queue:
     devDependencies:
@@ -287,13 +290,23 @@ importers:
         version: link:../types
 
   packages/redis:
+    dependencies:
+      ioredis:
+        specifier: ^5.10.1
+        version: 5.10.1
     devDependencies:
+      '@archiq/config':
+        specifier: workspace:*
+        version: link:../config
       '@archiq/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
       '@archiq/types':
         specifier: workspace:*
         version: link:../types
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
 
   packages/types:
     dependencies:
@@ -3494,7 +3507,6 @@ snapshots:
       zeptomatch: 2.1.0
     transitivePeerDependencies:
       - typescript
-    optional: true
 
   '@prisma/dev@0.24.3(typescript@6.0.3)':
     dependencies:
@@ -5458,7 +5470,6 @@ snapshots:
       - magicast
       - react
       - react-dom
-    optional: true
 
   prisma@7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@6.0.3):
     dependencies:
@@ -6087,7 +6098,6 @@ snapshots:
   valibot@1.2.0(typescript@5.9.3):
     optionalDependencies:
       typescript: 5.9.3
-    optional: true
 
   valibot@1.2.0(typescript@6.0.3):
     optionalDependencies:

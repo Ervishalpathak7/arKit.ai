@@ -14,6 +14,8 @@
     "@archiq/eslint-config": "workspace:*",
     "@archiq/config": "workspace:*",
     "@archiq/types": "workspace:*",
+    "@archiq/prisma": "workspace:*",
+    "@archiq/redis": "workspace:*",
     "@types/express": "^5.0.6",
     "@types/node": "^22.15.3",
     "@types/pg": "^8.20.0",
@@ -24,8 +26,7 @@
     "supertest": "^7.2.2",
     "tsc-alias": "^1.8.17",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.6",
-    "@archiq/prisma" : "workspace:*"
+    "vitest": "^4.1.6"
   },
   "dependencies": {
     "@archiq/log": "workspace:*",

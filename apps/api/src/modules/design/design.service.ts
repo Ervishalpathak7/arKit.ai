@@ -7,7 +7,7 @@ import {
 import { DesignRepository } from "./design.repository.js";
 import { createId } from "@paralleldrive/cuid2";
 import { AppError } from "@/error/index.js";
-import { Design, DesignStatus } from "@/generated/prisma/client.js";
+import { Design, DesignStatus } from "@archiq/prisma";
 import { IdempotencyRecord } from "@/types/index.js";
 import { RabbitMqService } from "@/services/queue/index.js";
 import { log } from "@/config/logger.js";

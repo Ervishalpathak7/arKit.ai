@@ -1,7 +1,7 @@
 import { PrismaClient } from "@archiq/prisma";
 import { Prisma } from "@archiq/prisma";
 import { RabbitMQ } from "@/infra/queue/rabbitmq.js";
-import { Redis } from "@/infra/redis/redis.js";
+import { Redis } from "@archiq/redis";
 import type { Redis as redisClient } from "ioredis";
 
 export type AppDependencies = {

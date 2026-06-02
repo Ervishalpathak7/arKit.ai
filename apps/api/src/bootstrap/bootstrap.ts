@@ -1,7 +1,7 @@
 import { log } from "@/config/logger.js";
 import { Prisma } from "@archiq/prisma";
 import { RabbitMQ } from "@/infra/queue/rabbitmq.js";
-import { Redis } from "@/infra/redis/redis.js";
+import { Redis } from "@archiq/redis";
 import { Infra } from "@archiq/types";
 
 type BootstrapOptions = {

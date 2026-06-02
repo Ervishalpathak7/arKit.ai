@@ -1,9 +1,9 @@
-import { Prisma } from "@/generated/prisma/client.js";
+import { InputJsonValue } from "@archiq/prisma";
 
 export type DesignUpdateInput = {
   title?: string;
   status?: DesignStatus;
-  body?: Prisma.InputJsonValue;
+  body?: InputJsonValue;
 };
 
 export type CreateDesignInput = {
