@@ -1,12 +1,12 @@
 import request from "supertest";
-import { CreateApp } from "@/app.js";
+import { CreateApp } from "../../src/app.js";
 import { describe, it, expect, afterAll, beforeAll, beforeEach } from "vitest";
-import { Prisma } from "@/infra/prisma/prisma.js";
-import { env } from "@/config/env.js";
+import { Prisma } from "@archiq/prisma";
+import { env } from "../../src/config/env.js";
 import { Application } from "express";
-import { Redis } from "@/infra/redis/redis.js";
+import { Redis } from "@archiq/redis";
 import { randomUUID } from "crypto";
-import { RabbitMQ } from "@/infra/queue/rabbitmq.js";
+import { RabbitMQ } from "@archiq/queue";
 
 describe("Design Api", () => {
   const prisma = new Prisma(env.DATABASE_URL);
