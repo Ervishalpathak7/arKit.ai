@@ -8,13 +8,23 @@ export async function initQueue(url: string) {
   try {
     const conn = await amqp.connect(url);
     channel = await conn.createChannel();
-    await channel.assertQueue(DESIGN_QUEUE, { durable: true });
+    await channel.assertQueue(DESIGN_QUEUE, {
+      durable: true,
+      arguments: {
+        "x-queue-type": "quorum",
+      },
+    });
   } catch (error) {
     channel = null;
     throw new Error(
       `Queue initialisation failed : ${(error as Error).message}`,
     );
   }
+}
+
+export async function dissconnectQueue() {
+  await getChannel().close();
+  channel = null;
 }
 
 function getChannel(): Channel {
