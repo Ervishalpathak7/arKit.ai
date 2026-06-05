@@ -39,7 +39,7 @@ export async function processDesign(jobId: string) {
 
   const response = await getClient().messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 2048, // bumped — JSON response is larger than raw Mermaid
+    max_tokens: 2048,
     system: [
       {
         type: "text",
@@ -50,10 +50,13 @@ export async function processDesign(jobId: string) {
     messages: [{ role: "user", content: design.prompt }],
   });
 
+  console.log("design prompt : ", design.prompt);
+
   const raw = response.content[0];
   if (!raw || raw.type !== "text") throw new Error("Unexpected response type");
 
   const diagram = parseDiagram(raw.text);
+  console.log(`diagram : `, diagram);
 
   await updateDesignById(jobId, { status: "READY", body: diagram });
   await setStatus(jobId, "READY");

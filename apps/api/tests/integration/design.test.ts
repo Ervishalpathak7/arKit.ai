@@ -34,7 +34,7 @@ describe("Design Api", () => {
   it("should give invalid request error", async () => {
     const response = await request(app)
       .post("/api/design/generate")
-      .send({ prompt: "testing prompt  ${randomId}" });
+      .send({ prompt: "generate an production level url shortner service" });
     expect(response.status).toBe(401);
     expect(response.body.error).toBe("INVALID_REQUEST");
   });
@@ -53,7 +53,7 @@ describe("Design Api", () => {
     const response = await request(app)
       .post("/api/design/generate")
       .set("idempotency-key", randomId)
-      .send({ prompt: `testing prompt ${randomId}` });
+      .send({ prompt: `generate an production level url shortner service` });
 
     expect(response.status).toBe(202);
     expect(response.body.data.id).toBeDefined();

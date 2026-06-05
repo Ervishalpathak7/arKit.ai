@@ -8,7 +8,7 @@ async function main() {
   const dbUrl = process.env.DATABASE_URL;
   const redisUrl = process.env.REDIS_URL;
   const rabbitUrl = process.env.RABBITMQ_URL;
-  const apiKey = process.env.GROK_API_KEY;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
 
   if (!dbUrl) throw new Error("DATABASE_URL is not set");
   if (!redisUrl) throw new Error("REDIS_URL is not set");
