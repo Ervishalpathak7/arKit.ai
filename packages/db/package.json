@@ -13,10 +13,11 @@
     }
   },
   "devDependencies": {
+    "@archiq/config": "workspace:*",
     "@archiq/eslint-config": "workspace:*",
     "@archiq/types": "workspace:*",
-    "@archiq/config": "workspace:*",
     "@types/pg": "^8.20.0",
+    "dotenv": "^17.4.2",
     "prisma": "7.8.0"
   },
   "dependencies": {

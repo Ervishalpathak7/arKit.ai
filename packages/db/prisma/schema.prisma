@@ -29,12 +29,14 @@ model Design {
   body        Json?
   authorId    String
   prompt      String
-  status      DesignStatus    @default(PROCESSING)
+  status      DesignStatus    @default(PENDING)
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 }
 
 enum DesignStatus {
+  PENDING
+  QUEUED
   PROCESSING
   READY
   FAILED

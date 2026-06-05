@@ -1,6 +1,8 @@
 import { Infra } from "@archiq/types";
 import { Channel, ChannelModel, connect } from "amqplib";
 
+const DESIGN_QUEUE = "design-queue";
+
 export class RabbitMQ implements Infra {
   private connection!: ChannelModel;
   private channel!: Channel;
