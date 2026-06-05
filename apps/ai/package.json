@@ -24,7 +24,6 @@
     "@anthropic-ai/sdk": "^0.100.1",
     "@archiq/cache": "workspace:*",
     "@archiq/db": "workspace:*",
-    "@archiq/log": "workspace:*",
     "@archiq/queue": "workspace:*"
   }
 }
