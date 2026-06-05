@@ -18,6 +18,10 @@ export async function initCache(url: string) {
   }
 }
 
+export async function dissconnectCache() {
+  await getRedis().quit();
+  redis = null;
+}
 function getRedis(): Redis {
   if (!redis) {
     throw new Error("Cache not initialized. Call initCache() first.");
@@ -33,13 +37,8 @@ export async function getStatus(jobId: string) {
   return getRedis().get(`job:${jobId}:status`);
 }
 
-export async function setResult(jobId: string, result: unknown) {
-  await getRedis().set(
-    `job:${jobId}:result`,
-    JSON.stringify(result),
-    "EX",
-    3600,
-  );
+export async function setResult(jobId: string, result: string) {
+  await getRedis().set(`job:${jobId}:result`, result, "EX", 3600);
 }
 
 export async function getResult<T>(jobId: string): Promise<T | null> {
