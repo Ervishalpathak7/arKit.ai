@@ -58,5 +58,10 @@ export async function updateDesignById(id: string, data: UpdateOptions) {
   });
 }
 
-export { DesignStatus };
+export async function dissconnectDb() {
+  await getClient().$disconnect();
+  prismaClient = null;
+}
+
+export type { DesignStatus };
 export type { Design };
