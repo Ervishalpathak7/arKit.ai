@@ -2,6 +2,7 @@
   "name": "ai",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "nodemon",
     "build": "tsc && tsc-alias",
@@ -9,27 +10,20 @@
     "lint": "echo 'Add lint script here'"
   },
   "devDependencies": {
-    "@archiq/eslint-config": "workspace:*",
     "@archiq/config": "workspace:*",
-    "@types/express": "^5.0.6",
+    "@archiq/types" : "workspace:*",
+    "@archiq/eslint-config": "workspace:*",
     "@types/node": "^22.15.3",
-    "@types/pg": "^8.20.0",
+    "dotenv": "^17.4.2",
     "npm-run-all": "^4.1.5",
     "tsc-alias": "^1.8.17",
     "typescipt": "^1.0.0"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.1",
+    "@archiq/cache": "workspace:*",
+    "@archiq/db": "workspace:*",
     "@archiq/log": "workspace:*",
-    "@paralleldrive/cuid2": "^3.3.0",
-    "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^7.8.0",
-    "amqplib": "^2.0.1",
-    "cookie-parser": "^1.4.7",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "helmet": "^8.1.0",
-    "ioredis": "^5.10.1",
-    "prom-client": "^15.1.3",
-    "zod": "^4.4.3"
+    "@archiq/queue": "workspace:*"
   }
 }

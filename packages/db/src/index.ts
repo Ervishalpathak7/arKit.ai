@@ -4,14 +4,14 @@ import {
   PrismaClient,
   Design,
 } from "./generated/prisma/client.js";
-import { NullableJsonNullValueInput } from "./generated/prisma/internal/prismaNamespace.js";
+import { DiagramBody } from "@archiq/types";
 
 let prismaClient: PrismaClient | null;
 
 type UpdateOptions = {
   title?: string;
   status?: DesignStatus;
-  body?: NullableJsonNullValueInput;
+  body?: DiagramBody;
 };
 
 type CreateOptions = {

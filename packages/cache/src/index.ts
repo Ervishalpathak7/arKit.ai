@@ -37,7 +37,7 @@ function getRedis(): Redis {
   return redis;
 }
 
-export async function setStatus(jobId: string, status: string) {
+export async function setStatus(jobId: string, status: DesignStatus) {
   await getRedis().set(`job:${jobId}:status`, status);
 }
 

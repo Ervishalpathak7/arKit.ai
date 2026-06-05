@@ -4,7 +4,6 @@
   "exec": "npm-run-all build start",
   "delay": 1500,
   "env": {
-    "NODE_ENV": "development",
-    "PORT": "3000"
+    "NODE_ENV": "development"
   }
 }
