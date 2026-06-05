@@ -3,6 +3,7 @@ import { initDb } from "@archiq/db";
 import { initCache } from "@archiq/cache";
 import { initQueue } from "@archiq/queue";
 import { startWorker } from "./worker.js";
+import { log } from "./logger.js";
 
 async function main() {
   const dbUrl = process.env.DATABASE_URL;
@@ -23,6 +24,6 @@ async function main() {
 }
 
 main().catch((err) => {
-  console.error("Worker failed to start:", err);
+  log.error({ service: "ai" }, "Worker failed to start:", err);
   process.exit(1);
 });

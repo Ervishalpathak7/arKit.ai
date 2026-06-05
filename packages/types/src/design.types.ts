@@ -1,18 +1,38 @@
-// packages/shared/types.ts
+export type DiagramNodeType =
+  | "client"
+  | "service"
+  | "worker"
+  | "database"
+  | "cache"
+  | "queue"
+  | "gateway"
+  | "object-storage";
+
+export type DiagramEdgeType =
+  | "http"
+  | "grpc"
+  | "event"
+  | "db"
+  | "cache"
+  | "storage";
+
 export type DiagramNode = {
   id: string;
   label: string;
-  type: "service" | "database" | "queue" | "cache" | "external" | "client";
+  type: DiagramNodeType;
+  description?: string;
 };
 
 export type DiagramEdge = {
-  from: string;
-  to: string;
+  id: string;
+  source: string;
+  target: string;
+  direction: "one-way" | "two-way";
+  type: DiagramEdgeType;
   label?: string;
 };
 
 export type DiagramBody = {
-  mermaid: string;
   nodes: DiagramNode[];
   edges: DiagramEdge[];
 };

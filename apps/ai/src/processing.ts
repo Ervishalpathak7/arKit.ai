@@ -2,25 +2,9 @@ import { getDesignById, updateDesignById } from "@archiq/db";
 import { setStatus } from "@archiq/cache";
 import Anthropic from "@anthropic-ai/sdk";
 import { DiagramBody } from "@archiq/types";
+import { SYSTEM_PROMPT } from "./systemPrompt.js";
 
 let client: Anthropic | null = null;
-
-const SYSTEM_PROMPT = `You are an architecture diagram generator.
-Given a description, return a JSON object with exactly this shape:
-{
-  "mermaid": "graph TD\\n  A[Client] --> B[API]\\n  B --> C[(Database)]",
-  "nodes": [
-    { "id": "A", "label": "Client", "type": "client" },
-    { "id": "B", "label": "API", "type": "service" },
-    { "id": "C", "label": "Database", "type": "database" }
-  ],
-  "edges": [
-    { "from": "A", "to": "B", "label": "HTTP" },
-    { "from": "B", "to": "C" }
-  ]
-}
-Node types must be one of: service, database, queue, cache, external, client.
-Return ONLY the JSON. No explanation, no markdown fences, no extra keys.`;
 
 function getClient(): Anthropic {
   if (!client) {
@@ -50,13 +34,10 @@ export async function processDesign(jobId: string) {
     messages: [{ role: "user", content: design.prompt }],
   });
 
-  console.log("design prompt : ", design.prompt);
-
   const raw = response.content[0];
   if (!raw || raw.type !== "text") throw new Error("Unexpected response type");
 
   const diagram = parseDiagram(raw.text);
-  console.log(`diagram : `, diagram);
 
   await updateDesignById(jobId, { status: "READY", body: diagram });
   await setStatus(jobId, "READY");
@@ -79,7 +60,6 @@ function parseDiagram(raw: string): DiagramBody {
   if (
     typeof parsed !== "object" ||
     parsed === null ||
-    typeof (parsed as any).mermaid !== "string" ||
     !Array.isArray((parsed as any).nodes) ||
     !Array.isArray((parsed as any).edges)
   ) {
