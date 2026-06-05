@@ -1,20 +1,26 @@
 import Redis from "ioredis";
 
-let redis: Redis | null;
+let redis: Redis | null = null;
 
 export async function initCache(url: string) {
+  const client = new Redis(url, {
+    maxRetriesPerRequest: 0,
+    lazyConnect: true, // don't auto-connect on construction
+  });
+
   try {
-    redis = new Redis(url);
-    await redis.ping();
+    await client.connect();
+    await client.ping();
+    redis = client;
   } catch (err) {
-    redis = null;
-    throw new Error(`Redis initialisation failed : ${(err as Error).message}`);
+    await client.quit();
+    throw new Error(`Cache initialization failed: ${(err as Error).message}`);
   }
 }
 
-function getRedis() {
+function getRedis(): Redis {
   if (!redis) {
-    throw new Error("Redis is not initialised , call initCache() first.");
+    throw new Error("Cache not initialized. Call initCache() first.");
   }
   return redis;
 }
@@ -27,8 +33,17 @@ export async function getStatus(jobId: string) {
   return getRedis().get(`job:${jobId}:status`);
 }
 
-export async function setResult(jobId: string, result: string) {
-  await getRedis().set(`job:${jobId}:result`, result, "EX", 3600);
+export async function setResult(jobId: string, result: unknown) {
+  await getRedis().set(
+    `job:${jobId}:result`,
+    JSON.stringify(result),
+    "EX",
+    3600,
+  );
 }
 
-export { redis as RedisClient };
+export async function getResult<T>(jobId: string): Promise<T | null> {
+  const raw = await getRedis().get(`job:${jobId}:result`);
+  if (!raw) return null;
+  return JSON.parse(raw) as T;
+}

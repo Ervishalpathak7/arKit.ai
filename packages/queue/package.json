@@ -12,9 +12,10 @@
     }
   },
   "devDependencies": {
+    "@archiq/config": "workspace:*",
     "@archiq/eslint-config": "workspace:*",
     "@archiq/types": "workspace:*",
-    "@archiq/config": "workspace:*",
+    "@types/node": "^22.15.3",
     "amqplib": "^2.0.1",
     "typescript": "^6.0.3"
   }
