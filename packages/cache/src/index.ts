@@ -1,6 +1,14 @@
 import Redis from "ioredis";
+import { DesignStatus } from "@archiq/db";
 
 let redis: Redis | null = null;
+const DEFAULT_IDEMPOTANCY_KEY_DURATION = 300;
+
+export type IdempotencyRecord = {
+  id: string;
+  status: DesignStatus;
+  requestHash: string;
+};
 
 export async function initCache(url: string) {
   const client = new Redis(url, {
@@ -45,4 +53,27 @@ export async function getResult<T>(jobId: string): Promise<T | null> {
   const raw = await getRedis().get(`job:${jobId}:result`);
   if (!raw) return null;
   return JSON.parse(raw) as T;
+}
+
+export async function setIdempotencyKey(
+  authorId: string,
+  idempotencyKey: string,
+  payload: IdempotencyRecord,
+) {
+  const redisKey = `idem:${authorId}:${idempotencyKey}`;
+  return getRedis().set(
+    redisKey,
+    JSON.stringify(payload),
+    "EX",
+    DEFAULT_IDEMPOTANCY_KEY_DURATION,
+    "NX",
+  );
+}
+
+export async function getIdempotentData(
+  authorId: string,
+  idempotencyKey: string,
+) {
+  const redisKey = `idem:${authorId}:${idempotencyKey}`;
+  return getRedis().get(redisKey);
 }

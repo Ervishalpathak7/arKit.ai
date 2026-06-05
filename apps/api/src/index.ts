@@ -2,29 +2,31 @@ import { env } from "@/config/env.js";
 import { CreateApp } from "@/app.js";
 import { log } from "@/config/logger.js";
 import { gracefulShutdown } from "@/utils/shutdown.js";
-import { Bootstrap } from "./bootstrap/bootstrap.js";
+import { initDb } from "@archiq/db";
+import { initCache } from "@archiq/cache";
+import { initQueue } from "@archiq/queue";
 
 async function StartServer() {
-  // Bootstrap init
-  const bootstrap = new Bootstrap({
-    postgresUrl: env.DATABASE_URL,
-    redisUrl: env.REDIS_URL,
-    rabbitMqUrl: env.RABBITMQ_URL,
-  });
-  await bootstrap.initialise();
+  // Db intialisation
+  await initDb(env.DATABASE_URL);
+  log.info(`Database Connected`);
+
+  // Cache initialisation
+  await initCache(env.REDIS_URL);
+  log.info(`Cache Connected`);
+
+  // Queue Initialisation
+  await initQueue(env.RABBITMQ_URL);
+  log.info(`Queue Connected`);
 
   // Server Initialisation
-  const prisma = bootstrap.prisma;
-  const redis = bootstrap.redis;
-  const rabbitMq = bootstrap.rabbitMq;
-
-  const app = CreateApp({ prisma, redis, rabbitMq });
+  const app = CreateApp();
   const server = app.listen(env.PORT, () => {
     log.info({ port: env.PORT }, `server started`);
   });
 
-  process.on("SIGTERM", () => gracefulShutdown("SIGTERM", server, bootstrap));
-  process.on("SIGINT", () => gracefulShutdown("SIGINT", server, bootstrap));
+  process.on("SIGTERM", () => gracefulShutdown("SIGTERM", server));
+  process.on("SIGINT", () => gracefulShutdown("SIGINT", server));
 }
 
 StartServer().catch((error) => {

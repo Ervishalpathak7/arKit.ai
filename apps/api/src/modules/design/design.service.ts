@@ -1,47 +1,45 @@
-import { RedisService } from "@/services/redis/index.js";
-import {
-  CreateDesignDTO,
-  GetAuthorDesignDTO,
-  UpdateDesignDTO,
-} from "./design.dto.js";
-import { DesignRepository } from "./design.repository.js";
+import { CreateDesignDTO, UpdateDesignDTO } from "./design.dto.js";
 import { createId } from "@paralleldrive/cuid2";
 import { AppError } from "@/error/index.js";
-import { Design, DesignStatus } from "@archiq/prisma";
-import { IdempotencyRecord } from "@/types/index.js";
-import { RabbitMqService } from "@/services/queue/index.js";
 import { log } from "@/config/logger.js";
+import { Design, DesignStatus, saveDesign, updateDesignById } from "@archiq/db";
+import { enqueueDesign } from "@archiq/queue";
+import {
+  setResult,
+  setIdempotencyKey,
+  getIdempotentData,
+  IdempotencyRecord,
+} from "@archiq/cache";
 
 const DEFAULT_LIMIT = 10;
 const MAX_LIMIT = 100;
-const DESIGN_QUEUE = "design-queue";
 
 export class DesignService {
-  constructor(
-    private repo: DesignRepository,
-    private redisService: RedisService,
-    private queueService: RabbitMqService,
-  ) {}
+  constructor() {}
 
-  async createDesign(data: CreateDesignDTO) {
+  async createDesign({
+    authorId,
+    prompt,
+    requestHash,
+    idempotencyKey,
+  }: CreateDesignDTO) {
     // Generate cuid for DesignId
     const id = createId();
 
     // Set Idempotency-key
-    const redisKey = `idem:${data.authorId}:${data.idempotencyKey}`;
-    const aquired = await this.redisService.setIdempotencyKey(redisKey, {
+    const aquired = await setIdempotencyKey(authorId, idempotencyKey, {
       id,
-      status: "PROCESSING",
-      requestHash: data.requestHash,
+      status: "PENDING",
+      requestHash: requestHash,
     });
 
     if (!aquired) {
-      const existing = await this.redisService.getSavedData(redisKey);
+      const existing = await getIdempotentData(authorId, idempotencyKey);
       if (!existing)
         throw new AppError("Race condition", 409, "RACE_CONDITION");
 
       const parsed = JSON.parse(existing) as IdempotencyRecord;
-      if (parsed.requestHash !== data.requestHash)
+      if (parsed.requestHash !== requestHash)
         throw new AppError("Payload mismatch", 409, "PAYLOAD_MISMATCH");
       return {
         id: parsed.id,
@@ -51,10 +49,10 @@ export class DesignService {
 
     let design: Design;
     try {
-      design = await this.repo.create({
+      design = await saveDesign({
         id,
-        authorId: data.authorId,
-        prompt: data.prompt,
+        authorId,
+        prompt,
       });
     } catch (error) {
       throw new AppError(
@@ -65,35 +63,21 @@ export class DesignService {
     }
 
     try {
-      await this.queueService.produce(
-        DESIGN_QUEUE,
-        JSON.stringify({
-          type: "design-generation",
-          id,
-        }),
-      );
-
-      log.info(
-        {
-          type: "queue",
-          id,
-        },
-        `design generation queued`,
-      );
+      await enqueueDesign({ type: "design-generation", id, authorId });
+      log.info({ id }, `design generation queued`);
     } catch (error) {
-      await this.repo.delete(design.id, data.authorId);
+      await updateDesignById(design.id, { status: "FAILED" });
       throw new AppError("design queue failed", 500, "RABBITMQ_FAILURE");
     }
 
     try {
-      await this.redisService.setData(
-        redisKey,
+      await setResult(
+        id,
         JSON.stringify({
           id: design.id,
           status: design.status,
-          requestHash: data.requestHash,
+          requestHash: requestHash,
         }),
-        86400,
       );
       return { id: design.id, status: design.status };
     } catch (error) {
@@ -107,22 +91,18 @@ export class DesignService {
     }
   }
 
-  async getAuthorDesign(data: GetAuthorDesignDTO) {
-    return this.repo.findByIdAndAuthor(data);
-  }
+  // async getAuthorDesign(data: GetAuthorDesignDTO) {
+  //   return this.repo.findByIdAndAuthor(data);
+  // }
 
-  async updateDesign({ id, authorId, data }: UpdateDesignDTO) {
-    return this.repo.update(id, authorId, data);
-  }
-
-  async listAuthorDesigns(
-    authorId: string,
-    page: number = 1,
-    limit: number = DEFAULT_LIMIT,
-  ) {
-    const checkedLimit =
-      limit <= 0 ? DEFAULT_LIMIT : Math.min(limit, MAX_LIMIT);
-    const checkedPage = page < 0 ? 1 : page;
-    return this.repo.findByAuthor(authorId, checkedPage, checkedLimit);
-  }
+  // async listAuthorDesigns(
+  //   authorId: string,
+  //   page: number = 1,
+  //   limit: number = DEFAULT_LIMIT,
+  // ) {
+  //   const checkedLimit =
+  //     limit <= 0 ? DEFAULT_LIMIT : Math.min(limit, MAX_LIMIT);
+  //   const checkedPage = page < 0 ? 1 : page;
+  //   return this.repo.findByAuthor(authorId, checkedPage, checkedLimit);
+  // }
 }

@@ -1,40 +1,28 @@
 import request from "supertest";
 import { CreateApp } from "../../src/app.js";
 import { describe, it, expect, afterAll, beforeAll, beforeEach } from "vitest";
-import { Prisma } from "@archiq/prisma";
 import { env } from "../../src/config/env.js";
 import { Application } from "express";
-import { Redis } from "@archiq/redis";
+import { dissconnectDb, initDb, getDesignById } from "@archiq/db";
+import { dissconnectCache, initCache } from "@archiq/cache";
+import { dissconnectQueue, initQueue } from "@archiq/queue";
 import { randomUUID } from "crypto";
-import { RabbitMQ } from "@archiq/queue";
 
 describe("Design Api", () => {
-  const prisma = new Prisma(env.DATABASE_URL);
-  const redis = new Redis(env.REDIS_URL);
-  const rabbitMq = new RabbitMQ(env.RABBITMQ_URL);
-  const randomId = randomUUID();
   let app: Application;
+  const randomId = randomUUID();
 
   beforeAll(async () => {
-    await prisma.connect();
-    await redis.connect();
-    await rabbitMq.connect();
-    app = CreateApp({
-      prisma,
-      redis,
-      rabbitMq,
-    });
-  });
-
-  beforeEach(async () => {
-    await prisma.getClient().design.deleteMany();
-    await redis.getClient().flushall();
+    await initDb(env.DATABASE_URL);
+    await initCache(env.REDIS_URL);
+    await initQueue(env.RABBITMQ_URL);
+    app = CreateApp();
   });
 
   afterAll(async () => {
-    await prisma.disconnect();
-    await redis.disconnect();
-    await rabbitMq.disconnect();
+    await dissconnectDb();
+    await dissconnectCache();
+    await dissconnectQueue();
   });
 
   it("Should give invalid request error", async () => {
@@ -69,11 +57,7 @@ describe("Design Api", () => {
 
     expect(response.status).toBe(202);
     expect(response.body.data.id).toBeDefined();
-
-    const design = await prisma
-      .getClient()
-      .design.findUnique({ where: { id: response.body.data.id } });
-
+    const design = await getDesignById(response.body.data.id);
     expect(design).not.toBe(null);
   });
 });

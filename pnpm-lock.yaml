@@ -201,6 +201,9 @@ importers:
       '@archiq/config':
         specifier: workspace:*
         version: link:../config
+      '@archiq/db':
+        specifier: workspace:*
+        version: link:../db
       '@archiq/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
@@ -307,25 +310,6 @@ importers:
       amqplib:
         specifier: ^2.0.1
         version: 2.0.1
-      typescript:
-        specifier: ^6.0.3
-        version: 6.0.3
-
-  packages/redis:
-    dependencies:
-      ioredis:
-        specifier: ^5.10.1
-        version: 5.10.1
-    devDependencies:
-      '@archiq/config':
-        specifier: workspace:*
-        version: link:../config
-      '@archiq/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
-      '@archiq/types':
-        specifier: workspace:*
-        version: link:../types
       typescript:
         specifier: ^6.0.3
         version: 6.0.3

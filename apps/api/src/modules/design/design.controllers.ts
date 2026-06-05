@@ -22,12 +22,15 @@ export class DesignController {
     const { prompt } = (req.body as { prompt: string }) || {};
     if (!prompt) throw new InvalidRequest("prompt", "Prompt is Required");
 
+    // TODO: add auth middleware before production
     req.userId = authorId;
+
+    // hash request
     const requestHash = createHash("sha256")
       .update(
         JSON.stringify({
           prompt,
-          userId: req.userId,
+          authorId: req.userId,
           route: req.originalUrl,
           method: req.method,
         }),

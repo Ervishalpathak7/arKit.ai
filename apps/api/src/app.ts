@@ -2,16 +2,11 @@ import helmet from "helmet";
 import express from "express";
 import { env } from "./config/env.js";
 import type { Application } from "express";
-import { AppDependencies } from "./types/index.js";
 import { register } from "@/observability/metrics.js";
 import { errorHandler } from "@/utils/errorHandler.js";
 import { DesignRouter } from "./modules/design/design.routes.js";
 
-export function CreateApp({
-  prisma,
-  redis,
-  rabbitMq,
-}: AppDependencies): Application {
+export function CreateApp(): Application {
   const app = express();
 
   // middlewares
@@ -19,11 +14,8 @@ export function CreateApp({
   app.use(express.json({ limit: "16kb" }));
   app.use(express.urlencoded({ limit: "16kb", extended: true }));
 
-  const prismaClient = prisma.getClient();
-  const redisClient = redis.getClient();
-
   // routes
-  const designRouter = DesignRouter({ prismaClient, redisClient, rabbitMq });
+  const designRouter = DesignRouter();
   app.use(designRouter);
 
   if (env.NODE_ENV !== "test") {

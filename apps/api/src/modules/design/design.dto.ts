@@ -1,4 +1,4 @@
-import { DesignUpdateInput } from "./design.types.js";
+import { DesignStatus } from "@archiq/db";
 
 export type GetAuthorDesignDTO = {
   id: string;
@@ -6,14 +6,14 @@ export type GetAuthorDesignDTO = {
 };
 
 export type CreateDesignDTO = {
-  prompt : string,
-  authorId : string,
-  requestHash : string
-  idempotencyKey : string
-}
+  prompt: string;
+  authorId: string;
+  requestHash: string;
+  idempotencyKey: string;
+};
 
 export type UpdateDesignDTO = {
   id: string;
   authorId: string;
-  data: DesignUpdateInput;
+  status: DesignStatus;
 };
