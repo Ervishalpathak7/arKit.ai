@@ -2,6 +2,7 @@ import Redis from "ioredis";
 import { DesignStatus } from "@archiq/db";
 
 let redis: Redis | null = null;
+let subs: Redis | null = null;
 const DEFAULT_IDEMPOTANCY_KEY_DURATION = 300;
 
 export type IdempotencyRecord = {
@@ -11,17 +12,26 @@ export type IdempotencyRecord = {
 };
 
 export async function initCache(url: string) {
-  const client = new Redis(url, {
+  const Cacheclient = new Redis(url, {
     maxRetriesPerRequest: 0,
     lazyConnect: true, // don't auto-connect on construction
   });
 
+  const subscribeClient = new Redis(url, {
+    maxRetriesPerRequest: 0,
+    lazyConnect: true,
+  });
+
   try {
-    await client.connect();
-    await client.ping();
-    redis = client;
+    await Cacheclient.connect();
+    await subscribeClient.connect();
+    await Cacheclient.ping();
+    await subscribeClient.ping();
+    redis = Cacheclient;
+    subs = subscribeClient;
   } catch (err) {
-    await client.quit();
+    await Cacheclient.quit();
+    await subscribeClient.quit();
     throw new Error(`Cache initialization failed: ${(err as Error).message}`);
   }
 }
@@ -35,6 +45,29 @@ function getRedis(): Redis {
     throw new Error("Cache not initialized. Call initCache() first.");
   }
   return redis;
+}
+
+function getSubscribe() {
+  if (!subs) {
+    throw new Error("Subscribe client not initialized. call initCache() first");
+  }
+  return subs;
+}
+
+export async function publish(channel: string, data: unknown) {
+  await getRedis().publish(channel, JSON.stringify(data));
+}
+
+export async function subscribe(
+  channel: string,
+  handler: (data: string) => void,
+) {
+  const sub = getSubscribe();
+  await sub.subscribe(channel);
+  sub.on("data", (ch, data) => {
+    if (ch !== channel) return;
+    handler(data);
+  });
 }
 
 export async function setStatus(jobId: string, status: DesignStatus) {

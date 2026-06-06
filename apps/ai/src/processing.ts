@@ -1,5 +1,5 @@
 import { getDesignById, updateDesignById } from "@archiq/db";
-import { setStatus } from "@archiq/cache";
+import { publish, setStatus } from "@archiq/cache";
 import Anthropic from "@anthropic-ai/sdk";
 import { DiagramBody } from "@archiq/types";
 import { SYSTEM_PROMPT } from "./systemPrompt.js";
@@ -38,9 +38,9 @@ export async function processDesign(jobId: string) {
   if (!raw || raw.type !== "text") throw new Error("Unexpected response type");
 
   const diagram = parseDiagram(raw.text);
-
   await updateDesignById(jobId, { status: "READY", body: diagram });
   await setStatus(jobId, "READY");
+  await publish(`design:${jobId}`, diagram);
 }
 
 function parseDiagram(raw: string): DiagramBody {

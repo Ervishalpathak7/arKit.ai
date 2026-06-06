@@ -8,6 +8,7 @@ export async function startWorker() {
   log.info(`worker started , waiting for message`);
   await consumeDesign(async (data) => {
     const { id } = data as { id: string };
+    log.info(`Design Generation Starts : [${id}]`);
 
     try {
       await processDesign(id);
