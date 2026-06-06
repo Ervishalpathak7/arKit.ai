@@ -6,6 +6,7 @@ export function DesignRouter(): Router {
   const designService = new DesignService();
   const controllers = new DesignController(designService);
   const router = Router();
-  router.post("/api/design/generate", controllers.CreateDesignController);
+  router.post("/design/generate", controllers.CreateDesignController);
+  router.get("/design/:id/stream", controllers.GetDesignController);
   return router;
 }

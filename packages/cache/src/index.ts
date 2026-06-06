@@ -47,7 +47,7 @@ function getRedis(): Redis {
   return redis;
 }
 
-function getSubscribe() {
+function getSubscriber() {
   if (!subs) {
     throw new Error("Subscribe client not initialized. call initCache() first");
   }
@@ -58,16 +58,19 @@ export async function publish(channel: string, data: unknown) {
   await getRedis().publish(channel, JSON.stringify(data));
 }
 
-export async function subscribe(
-  channel: string,
-  handler: (data: string) => void,
-) {
-  const sub = getSubscribe();
-  await sub.subscribe(channel);
-  sub.on("data", (ch, data) => {
+// remove async — this must be synchronous to return the unsubscribe function
+export function subscribe(channel: string, handler: (data: unknown) => void) {
+  const sub = getSubscriber();
+  sub.subscribe(channel);
+  sub.on("message", (ch, message) => {
     if (ch !== channel) return;
-    handler(data);
+    handler(JSON.parse(message));
   });
+
+  return () => {
+    sub.unsubscribe(channel);
+    sub.removeAllListeners("message");
+  };
 }
 
 export async function setStatus(jobId: string, status: DesignStatus) {
@@ -88,12 +91,15 @@ export async function getResult<T>(jobId: string): Promise<T | null> {
   return JSON.parse(raw) as T;
 }
 
+const idempotencyRedisKey = (authorId: string, idempotencyKey: string) =>
+  `idem:${authorId}:${idempotencyKey}`;
+
 export async function setIdempotencyKey(
   authorId: string,
   idempotencyKey: string,
   payload: IdempotencyRecord,
 ) {
-  const redisKey = `idem:${authorId}:${idempotencyKey}`;
+  const redisKey = idempotencyRedisKey(authorId, idempotencyKey);
   return getRedis().set(
     redisKey,
     JSON.stringify(payload),
@@ -107,6 +113,14 @@ export async function getIdempotentData(
   authorId: string,
   idempotencyKey: string,
 ) {
-  const redisKey = `idem:${authorId}:${idempotencyKey}`;
+  const redisKey = idempotencyRedisKey(authorId, idempotencyKey);
   return getRedis().get(redisKey);
+}
+
+export async function deleteIdempotencyKey(
+  authorId: string,
+  idempotencyKey: string,
+) {
+  const redisKey = idempotencyRedisKey(authorId, idempotencyKey);
+  return getRedis().del(redisKey);
 }

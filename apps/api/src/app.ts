@@ -9,14 +9,16 @@ import { DesignRouter } from "./modules/design/design.routes.js";
 export function CreateApp(): Application {
   const app = express();
 
-  // middlewares
+  // Middlewares
   app.use(helmet());
   app.use(express.json({ limit: "16kb" }));
   app.use(express.urlencoded({ limit: "16kb", extended: true }));
 
-  // routes
+  // Routes
+
+  // design routes
   const designRouter = DesignRouter();
-  app.use(designRouter);
+  app.use("/api", designRouter);
 
   if (env.NODE_ENV !== "test") {
     app.get("/metrics", async (_, res) => {
