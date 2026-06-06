@@ -1,7 +1,7 @@
 import { consumeDesign } from "@archiq/queue";
 import { processDesign } from "./processing.js";
 import { updateDesignById } from "@archiq/db";
-import { setStatus } from "@archiq/cache";
+import { publish, setStatus } from "@archiq/cache";
 import { log } from "./logger.js";
 
 export async function startWorker() {
@@ -17,6 +17,11 @@ export async function startWorker() {
       console.error(`[${id}] failed:`, error);
       await updateDesignById(id, { status: "FAILED" }).catch(() => {});
       await setStatus(id, "FAILED").catch(() => {});
+      await publish(`design:${id}`, {
+        type: "status",
+        status: "FAILED",
+        reason: (error as Error).message,
+      }).catch(() => {});
     }
   });
 }

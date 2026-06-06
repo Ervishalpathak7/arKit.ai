@@ -21,7 +21,7 @@ export async function processDesign(jobId: string) {
   await updateDesignById(jobId, { status: "PROCESSING" });
   await setStatus(jobId, "PROCESSING");
 
-  const response = await getClient().messages.create({
+  const stream = getClient().messages.stream({
     model: "claude-sonnet-4-6",
     max_tokens: 2048,
     system: [
@@ -34,13 +34,25 @@ export async function processDesign(jobId: string) {
     messages: [{ role: "user", content: design.prompt }],
   });
 
-  const raw = response.content[0];
-  if (!raw || raw.type !== "text") throw new Error("Unexpected response type");
+  let fullResponse = "";
 
-  const diagram = parseDiagram(raw.text);
+  for await (const chunk of stream) {
+    if (
+      chunk.type === "content_block_delta" &&
+      chunk.delta.type === "text_delta"
+    ) {
+      fullResponse += chunk.delta.text;
+      await publish(`design:${jobId}`, {
+        type: "chunk",
+        delta: chunk.delta.text,
+      });
+    }
+  }
+
+  const diagram = parseDiagram(fullResponse);
   await updateDesignById(jobId, { status: "READY", body: diagram });
   await setStatus(jobId, "READY");
-  await publish(`design:${jobId}`, diagram);
+  await publish(`design:${jobId}`, { type: "status", status: "READY" });
 }
 
 function parseDiagram(raw: string): DiagramBody {
