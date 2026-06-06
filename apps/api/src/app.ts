@@ -1,6 +1,6 @@
+import { env } from "./config/env.js";
 import helmet from "helmet";
 import express from "express";
-import { env } from "./config/env.js";
 import type { Application } from "express";
 import { register } from "@/observability/metrics.js";
 import { errorHandler } from "@/utils/errorHandler.js";

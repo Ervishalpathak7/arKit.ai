@@ -1,4 +1,41 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://ervishal:archiq763@postgres:5432/archiq
+      - REDIS_URL=redis://redis:6379
+      - RABBITMQ_URL=amqp://ervishal:archiq763@rabbitmq:5672
+      - PORT=3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  ai:
+    build:
+      context: .
+      dockerfile: apps/ai/Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://ervishal:archiq763@postgres:5432/archiq
+      - REDIS_URL=redis://redis:6379
+      - RABBITMQ_URL=amqp://ervishal:archiq763@rabbitmq:5672
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
   postgres:
     image: postgres:16
     restart: always
@@ -10,6 +47,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ervishal -d archiq"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:7-alpine
@@ -19,20 +61,30 @@ services:
     restart: unless-stopped
     volumes:
       - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
     hostname: rabbitmq-node
     ports:
-      - "5672:5672" # AMQP protocol port
-      - "15672:15672" # Management UI port
+      - "5672:5672"
+      - "15672:15672"
     environment:
       - RABBITMQ_DEFAULT_USER=ervishal
       - RABBITMQ_DEFAULT_PASS=archiq763
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   prometheus:
     image: prom/prometheus
@@ -42,15 +94,13 @@ services:
     ports:
       - "9090:9090"
     extra_hosts:
-    - "host.docker.internal:host-gateway"
+      - "host.docker.internal:host-gateway"
 
   grafana:
     image: grafana/grafana
     container_name: grafana
     ports:
       - "3001:3000"
-    networks:
-      - monitor-net
 
 networks:
   monitor-net:

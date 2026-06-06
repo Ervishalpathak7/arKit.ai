@@ -1,6 +1,11 @@
-import "dotenv/config";
 import z from "zod";
-import process from "node:process";
+
+console.log(process.env.NODE_ENV);
+
+if (process.env.NODE_ENV !== "production") {
+  const { config } = await import("dotenv");
+  config();
+}
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production", "test"]),

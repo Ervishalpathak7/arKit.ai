@@ -1,4 +1,8 @@
-import "dotenv/config";
+if (process.env.NODE_ENV !== "production") {
+  const { config } = await import("dotenv");
+  config();
+}
+
 import { initDb } from "@archiq/db";
 import { initCache } from "@archiq/cache";
 import { initQueue } from "@archiq/queue";

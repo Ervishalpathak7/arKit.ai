@@ -29,6 +29,9 @@ importers:
       '@archiq/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@archiq/log':
+        specifier: workspace:*
+        version: link:../../packages/log
       '@archiq/queue':
         specifier: workspace:*
         version: link:../../packages/queue
@@ -39,9 +42,6 @@ importers:
       '@archiq/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
-      '@archiq/log':
-        specifier: workspace:*
-        version: link:../../packages/log
       '@archiq/types':
         specifier: workspace:*
         version: link:../../packages/types

@@ -30,6 +30,6 @@ async function StartServer() {
 }
 
 StartServer().catch((error) => {
-  log.fatal({ error }, `Fatal startup error `);
+  log.fatal({ arror: (error as Error).message }, `Fatal startup error `);
   process.exitCode = 1;
 });

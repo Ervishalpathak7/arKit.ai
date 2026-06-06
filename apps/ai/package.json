@@ -12,7 +12,6 @@
     "@archiq/config": "workspace:*",
     "@archiq/eslint-config": "workspace:*",
     "@archiq/types": "workspace:*",
-    "@archiq/log": "workspace:*",
     "@types/node": "^22.15.3",
     "dotenv": "^17.4.2",
     "nodemon": "^3.1.14",
@@ -22,6 +21,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.100.1",
+    "@archiq/log": "workspace:*",
     "@archiq/cache": "workspace:*",
     "@archiq/db": "workspace:*",
     "@archiq/queue": "workspace:*"
