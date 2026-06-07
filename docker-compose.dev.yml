@@ -38,6 +38,24 @@ services:
     networks:
       - archiq-dev
     restart: unless-stopped
+  
+  ai:
+    build:
+      context: .
+      dockerfile: apps/ai/Dockerfile
+      # target: development
+    env_file:
+      - .env.development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - archiq-dev
+    restart: unless-stopped
 
   redis:
     image: redis:7-alpine

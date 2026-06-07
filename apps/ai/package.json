@@ -10,7 +10,10 @@
     "lint": "eslint .",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "docker:dev": "docker compose -f ../../docker-compose.dev.yml up --build ai",
+    "docker:dev:down": "docker compose -f ../../docker-compose.dev.yml down",
+    "docker:logs": "docker compose -f ../../docker-compose.dev.yml logs -f ai"
   },
   "devDependencies": {
     "@archiq/config": "workspace:*",
