@@ -271,6 +271,9 @@ importers:
       '@archiq/config':
         specifier: workspace:*
         version: link:../config
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
 
   packages/queue:
     devDependencies:
