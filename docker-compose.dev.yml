@@ -26,6 +26,11 @@ services:
       target: development
     ports:
       - "${PORT:-3000}:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.pnpm-store
+
     env_file:
       - .env.development
     depends_on:

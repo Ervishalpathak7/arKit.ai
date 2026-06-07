@@ -16,6 +16,18 @@ export function CreateApp(): Application {
 
   // Routes
 
+  // basic routes
+  app.get('/', (req, res) => {
+    res.status(200).send({
+      message: 'heelo from container!',
+      pod: process.env.POD_NAME || 'unknown',
+      timeStamp: new Date().toLocaleDateString(),
+    });
+  });
+
+  app.get('/readyz', (req, res) => res.status(200).send('ready'));
+  app.get('/healthz', (req, res) => res.status(200).send('ok'));
+
   // design routes
   const designRouter = DesignRouter();
   app.use('/api', designRouter);

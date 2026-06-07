@@ -62,12 +62,6 @@ RUN npm install -g pnpm
 # packages have dist/ from builder, api dist/ is ignored since nodemon runs src/ directly
 COPY --from=builder /app .
 
-# Create a non-root system group and user for security
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup \
-    && chown -R appuser:appgroup /app
-
-# Switch to non-root user
-USER appuser
 
 # Expose port 3000 for HTTP traffic
 EXPOSE 3000
