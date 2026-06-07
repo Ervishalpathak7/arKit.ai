@@ -1,14 +1,14 @@
-import request from "supertest";
-import { CreateApp } from "../../src/app.js";
-import { describe, it, expect, afterAll, beforeAll, beforeEach } from "vitest";
-import { env } from "../../src/config/env.js";
-import { Application } from "express";
-import { dissconnectDb, initDb, getDesignById } from "@archiq/db";
-import { dissconnectCache, initCache } from "@archiq/cache";
-import { dissconnectQueue, initQueue } from "@archiq/queue";
-import { randomUUID } from "crypto";
+import request from 'supertest';
+import { CreateApp } from '../../src/app.js';
+import { describe, it, expect, afterAll, beforeAll, beforeEach } from 'vitest';
+import { env } from '../../src/config/env.js';
+import { Application } from 'express';
+import { dissconnectDb, initDb, getDesignById } from '@archiq/db';
+import { dissconnectCache, initCache } from '@archiq/cache';
+import { dissconnectQueue, initQueue } from '@archiq/queue';
+import { randomUUID } from 'crypto';
 
-describe("Design Api", () => {
+describe('Design Api', () => {
   let app: Application;
   const randomId = randomUUID();
 
@@ -25,34 +25,34 @@ describe("Design Api", () => {
     await dissconnectQueue();
   });
 
-  it("Should give invalid request error", async () => {
-    const response = await request(app).post("/api/design/generate").send();
+  it('Should give invalid request error', async () => {
+    const response = await request(app).post('/api/design/generate').send();
     expect(response.status).toBe(401);
-    expect(response.body.error).toBe("INVALID_REQUEST");
+    expect(response.body.error).toBe('INVALID_REQUEST');
   });
 
-  it("should give invalid request error", async () => {
+  it('should give invalid request error', async () => {
     const response = await request(app)
-      .post("/api/design/generate")
-      .send({ prompt: "generate an production level url shortner service" });
+      .post('/api/design/generate')
+      .send({ prompt: 'generate an production level url shortner service' });
     expect(response.status).toBe(401);
-    expect(response.body.error).toBe("INVALID_REQUEST");
+    expect(response.body.error).toBe('INVALID_REQUEST');
   });
 
-  it("Should give invalid request error", async () => {
+  it('Should give invalid request error', async () => {
     const response = await request(app)
-      .post("/api/design/generate")
-      .set("idempotency-key", randomId)
+      .post('/api/design/generate')
+      .set('idempotency-key', randomId)
       .send();
 
     expect(response.status).toBe(401);
-    expect(response.body.error).toBe("INVALID_REQUEST");
+    expect(response.body.error).toBe('INVALID_REQUEST');
   });
 
-  it("should generate a design and give designId", async () => {
+  it('should generate a design and give designId', async () => {
     const response = await request(app)
-      .post("/api/design/generate")
-      .set("idempotency-key", randomId)
+      .post('/api/design/generate')
+      .set('idempotency-key', randomId)
       .send({ prompt: `generate an production level url shortner service` });
 
     expect(response.status).toBe(202);

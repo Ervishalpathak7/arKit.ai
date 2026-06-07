@@ -1,5 +1,3 @@
 import baseConfig from '@archiq/eslint-config/base';
 
-export default [
-  ...baseConfig
-];
+export default [...baseConfig];

@@ -6,7 +6,7 @@ export class AppError extends Error {
   constructor(
     message: string,
     statusCode = 500,
-    code = "INTERNAL_SERVER_ERROR",
+    code = 'INTERNAL_SERVER_ERROR'
   ) {
     super(message);
     this.name = this.constructor.name;
@@ -21,7 +21,7 @@ export class AppError extends Error {
 export class InvalidRequest extends AppError {
   public readonly field: string;
   constructor(field: string, message: string) {
-    super(message, 401, "INVALID_REQUEST");
+    super(message, 401, 'INVALID_REQUEST');
     this.field = field;
   }
 }

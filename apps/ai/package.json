@@ -8,6 +8,8 @@
     "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
     "lint:check": "eslint .",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {

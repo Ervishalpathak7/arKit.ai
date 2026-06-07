@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   resolve: {
@@ -6,7 +6,7 @@ export default defineConfig({
   },
   test: {
     globals: true,
-    environment: "node",
-    exclude: ["dist", "node_modules"],
+    environment: 'node',
+    exclude: ['dist', 'node_modules'],
   },
 });

@@ -1,4 +1,4 @@
-import { DesignStatus } from "@archiq/db";
+import { DesignStatus } from '@archiq/db';
 
 export type GetAuthorDesignDTO = {
   id: string;

@@ -1,12 +1,12 @@
-import { DesignService } from "./design.service.js";
-import { DesignController } from "./design.controllers.js";
-import { Router } from "express";
+import { DesignService } from './design.service.js';
+import { DesignController } from './design.controllers.js';
+import { Router } from 'express';
 
 export function DesignRouter(): Router {
   const designService = new DesignService();
   const controllers = new DesignController(designService);
   const router = Router();
-  router.post("/design/generate", controllers.CreateDesignController);
-  router.get("/design/:id/stream", controllers.GetDesignController);
+  router.post('/design/generate', controllers.CreateDesignController);
+  router.get('/design/:id/stream', controllers.GetDesignController);
   return router;
 }

@@ -7,8 +7,10 @@
     "dev": "nodemon",
     "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
-    "lint:check": "eslint .",
+    "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "format:fix": "prettier --write .",
+    "format": "prettier --check .",
     "test": "vitest"
   },
   "devDependencies": {
