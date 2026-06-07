@@ -5,16 +5,19 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
     "check-types": "turbo run check-types",
+    "dev:api": "turbo dev --filter=@archiq/api",
+    "dev:ai": "turbo dev --filter=@archiq/ai",
+    "dev:web": "turbo dev --filter=@archiq/web",
     "build:api": "turbo build --filter=@archiq/api",
     "build:ai": "turbo build --filter=@archiq/ai",
     "build:web": "turbo build --filter=@archiq/web",
-    "dev:api": "turbo dev --filter=@archiq/api",
     "dev:docker:api": "docker compose -f docker-compose.yml up -d --build api",
     "dev:docker:ai": "docker compose -f docker-compose.yml up -d --build ai",
-    "dev:ai": "turbo dev --filter=@archiq/ai",
-    "dev:web": "turbo dev --filter=@archiq/web"
+    "docker:logs:api": "docker compose -f docker-compose.dev.yml logs -f api",
+    "docker:logs:ai": "docker compose -f docker-compose.dev.yml logs -f ai"
   },
   "devDependencies": {
     "prettier": "^3.7.4",

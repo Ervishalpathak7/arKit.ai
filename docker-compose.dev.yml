@@ -3,7 +3,7 @@ services:
     image: postgres:16-alpine
     container_name: archiq-postgres
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_USER: ervishal
       POSTGRES_PASSWORD: archiq763
@@ -11,7 +11,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 5s
       timeout: 3s
       retries: 5
@@ -25,7 +25,7 @@ services:
       dockerfile: apps/api/Dockerfile
       # target: development
     ports:
-      - "${PORT:-3000}:3000"
+      - '${PORT:-3000}:3000'
     env_file:
       - .env.development
     depends_on:
@@ -38,7 +38,7 @@ services:
     networks:
       - archiq-dev
     restart: unless-stopped
-  
+
   ai:
     build:
       context: .
@@ -61,12 +61,12 @@ services:
     image: redis:7-alpine
     container_name: archiq-redis
     ports:
-      - "6379:6379"
+      - '6379:6379'
     restart: unless-stopped
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
       timeout: 5s
       retries: 5
@@ -78,8 +78,8 @@ services:
     container_name: rabbitmq
     hostname: rabbitmq-node
     ports:
-      - "5672:5672"
-      - "15672:15672"
+      - '5672:5672'
+      - '15672:15672'
     environment:
       - RABBITMQ_DEFAULT_USER=ervishal
       - RABBITMQ_DEFAULT_PASS=archiq763
@@ -87,7 +87,7 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      test: ['CMD', 'rabbitmq-diagnostics', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -100,9 +100,9 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
-      - "9090:9090"
+      - '9090:9090'
     extra_hosts:
-      - "host.docker.internal:host-gateway"
+      - 'host.docker.internal:host-gateway'
     networks:
       - archiq-dev
 
@@ -110,7 +110,7 @@ services:
     image: grafana/grafana
     container_name: grafana
     ports:
-      - "3001:3000"
+      - '3001:3000'
     volumes:
       - grafana_data:/var/lib/grafana
     restart: unless-stopped

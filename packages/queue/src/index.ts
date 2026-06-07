@@ -1,8 +1,8 @@
-import amqp from "amqplib";
-import { Channel } from "amqplib";
+import amqp from 'amqplib';
+import { Channel } from 'amqplib';
 
 let channel: Channel | null = null;
-const DESIGN_QUEUE = "design-queue";
+const DESIGN_QUEUE = 'design-queue';
 
 export async function initQueue(url: string) {
   try {
@@ -11,13 +11,13 @@ export async function initQueue(url: string) {
     await channel.assertQueue(DESIGN_QUEUE, {
       durable: true,
       arguments: {
-        "x-queue-type": "quorum",
+        'x-queue-type': 'quorum',
       },
     });
   } catch (error) {
     channel = null;
     throw new Error(
-      `Queue initialisation failed : ${(error as Error).message}`,
+      `Queue initialisation failed : ${(error as Error).message}`
     );
   }
 }
@@ -29,7 +29,7 @@ export async function dissconnectQueue() {
 
 function getChannel(): Channel {
   if (!channel) {
-    throw new Error("Queue not initialized. Call initQueue() first.");
+    throw new Error('Queue not initialized. Call initQueue() first.');
   }
   return channel;
 }
@@ -43,7 +43,7 @@ export async function enqueueDesign(payload: object) {
 
 export async function consumeDesign(handler: (data: object) => Promise<void>) {
   const ch = getChannel();
-  ch.consume(DESIGN_QUEUE, async (msg) => {
+  ch.consume(DESIGN_QUEUE, async msg => {
     if (!msg) return;
     try {
       await handler(JSON.parse(msg.content.toString()));

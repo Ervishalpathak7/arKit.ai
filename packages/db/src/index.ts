@@ -1,10 +1,10 @@
-import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaPg } from '@prisma/adapter-pg';
 import {
   DesignStatus,
   PrismaClient,
   Design,
-} from "./generated/prisma/client.js";
-import { DiagramBody } from "@archiq/types";
+} from './generated/prisma/client.js';
+import { DiagramBody } from '@archiq/types';
 
 let prismaClient: PrismaClient | null;
 
@@ -37,7 +37,7 @@ export async function initDb(connectionString: string) {
 function getClient(): PrismaClient {
   if (!prismaClient) {
     throw new Error(
-      "DB not initialized. Call initDb() before using db functions.",
+      'DB not initialized. Call initDb() before using db functions.'
     );
   }
   return prismaClient;

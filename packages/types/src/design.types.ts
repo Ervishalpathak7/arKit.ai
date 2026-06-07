@@ -1,20 +1,20 @@
 export type DiagramNodeType =
-  | "client"
-  | "service"
-  | "worker"
-  | "database"
-  | "cache"
-  | "queue"
-  | "gateway"
-  | "object-storage";
+  | 'client'
+  | 'service'
+  | 'worker'
+  | 'database'
+  | 'cache'
+  | 'queue'
+  | 'gateway'
+  | 'object-storage';
 
 export type DiagramEdgeType =
-  | "http"
-  | "grpc"
-  | "event"
-  | "db"
-  | "cache"
-  | "storage";
+  | 'http'
+  | 'grpc'
+  | 'event'
+  | 'db'
+  | 'cache'
+  | 'storage';
 
 export type DiagramNode = {
   id: string;
@@ -27,7 +27,7 @@ export type DiagramEdge = {
   id: string;
   source: string;
   target: string;
-  direction: "one-way" | "two-way";
+  direction: 'one-way' | 'two-way';
   type: DiagramEdgeType;
   label?: string;
 };

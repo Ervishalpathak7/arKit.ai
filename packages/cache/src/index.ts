@@ -1,5 +1,5 @@
-import Redis from "ioredis";
-import { DesignStatus } from "@archiq/db";
+import Redis from 'ioredis';
+import { DesignStatus } from '@archiq/db';
 
 let redis: Redis | null = null;
 let subs: Redis | null = null;
@@ -42,14 +42,14 @@ export async function dissconnectCache() {
 }
 function getRedis(): Redis {
   if (!redis) {
-    throw new Error("Cache not initialized. Call initCache() first.");
+    throw new Error('Cache not initialized. Call initCache() first.');
   }
   return redis;
 }
 
 function getSubscriber() {
   if (!subs) {
-    throw new Error("Subscribe client not initialized. call initCache() first");
+    throw new Error('Subscribe client not initialized. call initCache() first');
   }
   return subs;
 }
@@ -62,14 +62,14 @@ export async function publish(channel: string, data: unknown) {
 export function subscribe(channel: string, handler: (data: unknown) => void) {
   const sub = getSubscriber();
   sub.subscribe(channel);
-  sub.on("message", (ch, message) => {
+  sub.on('message', (ch, message) => {
     if (ch !== channel) return;
     handler(JSON.parse(message));
   });
 
   return () => {
     sub.unsubscribe(channel);
-    sub.removeAllListeners("message");
+    sub.removeAllListeners('message');
   };
 }
 
@@ -82,7 +82,7 @@ export async function getStatus(jobId: string) {
 }
 
 export async function setResult(jobId: string, result: string) {
-  await getRedis().set(`job:${jobId}:result`, result, "EX", 3600);
+  await getRedis().set(`job:${jobId}:result`, result, 'EX', 3600);
 }
 
 export async function getResult<T>(jobId: string): Promise<T | null> {
@@ -97,21 +97,21 @@ const idempotencyRedisKey = (authorId: string, idempotencyKey: string) =>
 export async function setIdempotencyKey(
   authorId: string,
   idempotencyKey: string,
-  payload: IdempotencyRecord,
+  payload: IdempotencyRecord
 ) {
   const redisKey = idempotencyRedisKey(authorId, idempotencyKey);
   return getRedis().set(
     redisKey,
     JSON.stringify(payload),
-    "EX",
+    'EX',
     DEFAULT_IDEMPOTANCY_KEY_DURATION,
-    "NX",
+    'NX'
   );
 }
 
 export async function getIdempotentData(
   authorId: string,
-  idempotencyKey: string,
+  idempotencyKey: string
 ) {
   const redisKey = idempotencyRedisKey(authorId, idempotencyKey);
   return getRedis().get(redisKey);
@@ -119,7 +119,7 @@ export async function getIdempotentData(
 
 export async function deleteIdempotencyKey(
   authorId: string,
-  idempotencyKey: string,
+  idempotencyKey: string
 ) {
   const redisKey = idempotencyRedisKey(authorId, idempotencyKey);
   return getRedis().del(redisKey);

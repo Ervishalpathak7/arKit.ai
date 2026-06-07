@@ -1,4 +1,4 @@
-import pino from "pino";
+import pino from 'pino';
 
 type CreateLoggerOptions = {
   service: string;
@@ -10,7 +10,7 @@ export const createAppLogger = ({
   production = false,
 }: CreateLoggerOptions) => {
   return pino({
-    level: production ? "info" : "debug",
+    level: production ? 'info' : 'debug',
     timestamp: pino.stdTimeFunctions.isoTime,
     serializers: {
       err: pino.stdSerializers.err,
@@ -21,10 +21,10 @@ export const createAppLogger = ({
     transport: production
       ? undefined
       : {
-          target: "pino-pretty",
+          target: 'pino-pretty',
           options: {
             colorize: true,
-            translateTime: "SYS:standard",
+            translateTime: 'SYS:standard',
           },
         },
   });
