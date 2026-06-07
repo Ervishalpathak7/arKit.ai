@@ -14,8 +14,8 @@
     "build:api": "turbo build --filter=@archiq/api",
     "build:ai": "turbo build --filter=@archiq/ai",
     "build:web": "turbo build --filter=@archiq/web",
-    "dev:docker:api": "docker compose -f docker-compose.yml up -d --build api",
-    "dev:docker:ai": "docker compose -f docker-compose.yml up -d --build ai",
+    "dev:docker:api": "docker compose -f docker-compose.dev.yml up -d --build api",
+    "dev:docker:ai": "docker compose -f docker-compose.dev.yml up -d --build ai",
     "docker:logs:api": "docker compose -f docker-compose.dev.yml logs -f api",
     "docker:logs:ai": "docker compose -f docker-compose.dev.yml logs -f ai"
   },
