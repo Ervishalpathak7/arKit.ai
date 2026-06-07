@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc && cp -r src/generated dist/generated"
+    "build": "tsc && cp -r src/generated dist/generated",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "exports": {
     ".": {
