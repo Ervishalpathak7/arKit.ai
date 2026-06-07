@@ -11,6 +11,7 @@
     "build:ai": "turbo build --filter=@archiq/ai",
     "build:web": "turbo build --filter=@archiq/web",
     "dev:api": "turbo dev --filter=@archiq/api",
+    "dev:api:docker": "docker compose -f docker-compose.yml up -d --build api",
     "dev:ai": "turbo dev --filter=@archiq/ai",
     "dev:web": "turbo dev --filter=@archiq/web"
   },
