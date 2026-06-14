@@ -6,7 +6,7 @@ import {
 } from './generated/prisma/client.js';
 import { DiagramBody } from '@archiq/types';
 
-let prismaClient: PrismaClient | null;
+let prismaClient: PrismaClient | null = null;
 
 type UpdateOptions = {
   title?: string;
@@ -30,11 +30,11 @@ export async function initDb(connectionString: string) {
   } catch (err) {
     await prismaClient.$disconnect();
     prismaClient = null;
-    throw new Error(`DB initialization failed: ${(err as Error).message}`);
+    throw new Error(`DB initialization failed: ${err}`);
   }
 }
 
-function getClient(): PrismaClient {
+function getClient() {
   if (!prismaClient) {
     throw new Error(
       'DB not initialized. Call initDb() before using db functions.'
@@ -58,8 +58,9 @@ export async function updateDesignById(id: string, data: UpdateOptions) {
   });
 }
 
-export async function dissconnectDb() {
-  await getClient().$disconnect();
+export async function disconnectDb() {
+  if (!prismaClient) return;
+  await prismaClient.$disconnect();
   prismaClient = null;
 }
 

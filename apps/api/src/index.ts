@@ -25,11 +25,18 @@ async function StartServer() {
     log.info({ port: env.PORT }, `server started`);
   });
 
-  process.on('SIGTERM', () => gracefulShutdown('SIGTERM', server));
-  process.on('SIGINT', () => gracefulShutdown('SIGINT', server));
+  process.on('SIGTERM', () => {
+    console.log('Signal : SIGTERM');
+    gracefulShutdown('SIGTERM', server);
+  });
+  process.on('SIGINT', () => {
+    console.log('Signal : SIGINT');
+    gracefulShutdown('SIGINT', server);
+  });
 }
 
 StartServer().catch(error => {
-  log.fatal({ arror: (error as Error).message }, `Fatal startup error `);
+  console.error('the error :', error);
+  log.fatal({ error: (error as Error).message }, `Fatal startup error `);
   process.exitCode = 1;
 });

@@ -1,9 +1,9 @@
 import request from 'supertest';
 import { CreateApp } from '../../src/app.js';
-import { describe, it, expect, afterAll, beforeAll, beforeEach } from 'vitest';
+import { describe, it, expect, afterAll, beforeAll } from 'vitest';
 import { env } from '../../src/config/env.js';
 import { Application } from 'express';
-import { dissconnectDb, initDb, getDesignById } from '@archiq/db';
+import { disconnectDb, initDb, getDesignById } from '@archiq/db';
 import { dissconnectCache, initCache } from '@archiq/cache';
 import { dissconnectQueue, initQueue } from '@archiq/queue';
 import { randomUUID } from 'crypto';
@@ -20,7 +20,7 @@ describe('Design Api', () => {
   });
 
   afterAll(async () => {
-    await dissconnectDb();
+    await disconnectDb();
     await dissconnectCache();
     await dissconnectQueue();
   });

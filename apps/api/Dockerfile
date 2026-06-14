@@ -1,4 +1,5 @@
 # ── Stage 1: prune ──────────────────────────────────────────
+
 # Base image for prune
 FROM node:22-alpine AS pruner
 
@@ -15,6 +16,7 @@ COPY . .
 RUN turbo prune @archiq/api --docker
 
 # ── Stage 2: install & build ─────────────────────────────────
+
 # Fresh image for building — nothing carries over from pruner except what we COPY
 FROM node:22-alpine AS builder
 
@@ -44,7 +46,7 @@ COPY --from=pruner /app/out/full/ .
 # packages like @archiq/types, @archiq/db, @archiq/log etc. build first, then api
 RUN pnpm turbo build --filter=@archiq/api
 
-# ── Stage 3a: development ────────────────────────────────────
+# ── Stage 3a: Development ────────────────────────────────────
 
 # Separate stage for development — includes full source and all dependencies
 FROM node:22-alpine AS development
@@ -71,8 +73,9 @@ EXPOSE 3000
 CMD ["pnpm", "--filter=@archiq/api", "dev"]
 
 # ── Stage 4: production ──────────────────────────────────────
+
 # Minimal production image — only dist and prod dependencies
-FROM node:22-alpine AS runner
+FROM node:22-alpine AS production
 
 # Set the working directory
 WORKDIR /app

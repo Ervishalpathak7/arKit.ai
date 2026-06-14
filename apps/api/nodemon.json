@@ -3,6 +3,6 @@
   "ext": "ts,json",
   "ignore": ["dist/**", "node_modules/**"],
   "delay": 1500,
-  "exec": "npx tsx src/index.ts",
+  "exec": "npx tsx -r dotenv/config src/index.ts",
   "legacyWatch": true
 }
