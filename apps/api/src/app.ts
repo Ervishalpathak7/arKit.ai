@@ -1,9 +1,7 @@
-import { env } from '@/config/env.js';
 import helmet from 'helmet';
 import express, { Application } from 'express';
-import { register } from '@/observability/metrics.js';
 import { errorHandler } from '@/utils/errorHandler.js';
-import { DesignRouter } from '@/modules/design/design.routes.js';
+import DesignRouter from '@/routes/design.routes.js';
 
 export function CreateApp(): Application {
   // express app creation
@@ -27,16 +25,8 @@ export function CreateApp(): Application {
   app.get('/healthz', (_req, res) => res.status(200).send('ok'));
 
   // design routes
-  const designRouter = DesignRouter();
-  app.use('/api', designRouter);
+  app.use('/api', DesignRouter);
 
-  // if (env.NODE_ENV !== 'test') {
-  //   app.get('/metrics', async (_, res) => {
-  //     res.setHeader('Content-Type', register.contentType);
-  //     const metrics = await register.metrics();
-  //     res.send(metrics);
-  //   });
-  // }
 
   app.use(errorHandler);
   return app;
