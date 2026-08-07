@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Design" ALTER COLUMN "status" SET DEFAULT 'PENDING';
