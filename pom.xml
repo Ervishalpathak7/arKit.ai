@@ -8,10 +8,10 @@
 		<version>4.1.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.arkit</groupId>
+	<groupId>com.arckit</groupId>
 	<artifactId>main</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
+	<name>main</name>
 	<description/>
 	<url/>
 	<licenses>
