@@ -1,4 +1,4 @@
-package com.arkit.api;
+package com.arkit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
