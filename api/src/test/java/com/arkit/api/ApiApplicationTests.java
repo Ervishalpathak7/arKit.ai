@@ -1,10 +1,10 @@
-package com.arckit.main;
+package com.arkit.api;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MainApplicationTests {
+class ApiApplicationTests {
 
 	@Test
 	void contextLoads() {
