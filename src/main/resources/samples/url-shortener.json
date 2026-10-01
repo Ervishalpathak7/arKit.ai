@@ -1,0 +1,203 @@
+{
+  "nodes": [
+    {
+      "id": "web-client",
+      "label": "Web / Mobile Client",
+      "type": "CLIENT",
+      "layer": "CLIENT",
+      "description": "Browser or app that creates short links and follows them"
+    },
+    {
+      "id": "cdn",
+      "label": "CDN",
+      "type": "CDN",
+      "layer": "EDGE",
+      "description": "Caches popular redirect responses at edge locations close to users"
+    },
+    {
+      "id": "load-balancer",
+      "label": "Load Balancer",
+      "type": "LOAD_BALANCER",
+      "layer": "EDGE",
+      "description": "Distributes incoming traffic across gateway instances"
+    },
+    {
+      "id": "api-gateway",
+      "label": "API Gateway",
+      "type": "GATEWAY",
+      "layer": "EDGE",
+      "description": "Handles routing, rate limiting and API key authentication"
+    },
+    {
+      "id": "shortener-service",
+      "label": "Shortener Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Validates long URLs and creates short code mappings"
+    },
+    {
+      "id": "redirect-service",
+      "label": "Redirect Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Resolves short codes and returns HTTP 301/302 redirects"
+    },
+    {
+      "id": "key-generation-service",
+      "label": "Key Generation Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Pre-allocates unique base62 short code ranges to avoid collisions"
+    },
+    {
+      "id": "expiry-cleanup-worker",
+      "label": "Expiry Cleanup Worker",
+      "type": "WORKER",
+      "layer": "APPLICATION",
+      "description": "Periodically removes expired short links from storage and cache"
+    },
+    {
+      "id": "url-cache",
+      "label": "URL Cache (Redis)",
+      "type": "CACHE",
+      "layer": "DATA",
+      "description": "In-memory cache of hot short code to long URL mappings"
+    },
+    {
+      "id": "url-database",
+      "label": "URL Database (NoSQL)",
+      "type": "DATABASE",
+      "layer": "DATA",
+      "description": "Durable key-value store of short codes, long URLs, owners and expiry"
+    },
+    {
+      "id": "safe-browsing-api",
+      "label": "Safe Browsing API",
+      "type": "EXTERNAL_SERVICE",
+      "layer": "EXTERNAL",
+      "description": "Third-party check that flags malicious or phishing destination URLs"
+    }
+  ],
+  "edges": [
+    {
+      "from": "web-client",
+      "to": "cdn",
+      "label": "GET /{code} follow short link",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "web-client",
+      "to": "load-balancer",
+      "label": "POST /shorten create link",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "cdn",
+      "to": "load-balancer",
+      "label": "Forward redirect on cache miss",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "load-balancer",
+      "to": "api-gateway",
+      "label": "Route request",
+      "protocol": "HTTP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "shortener-service",
+      "label": "Create short URL",
+      "protocol": "HTTP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "redirect-service",
+      "label": "Resolve short code",
+      "protocol": "HTTP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "shortener-service",
+      "to": "key-generation-service",
+      "label": "Fetch unused key range",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "shortener-service",
+      "to": "safe-browsing-api",
+      "label": "Validate destination URL",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "shortener-service",
+      "to": "url-database",
+      "label": "Persist URL mapping",
+      "protocol": "TCP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "shortener-service",
+      "to": "url-cache",
+      "label": "Write-through new mapping",
+      "protocol": "RESP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "redirect-service",
+      "to": "url-cache",
+      "label": "Lookup short code",
+      "protocol": "RESP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "redirect-service",
+      "to": "url-database",
+      "label": "Lookup on cache miss",
+      "protocol": "TCP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "key-generation-service",
+      "to": "url-database",
+      "label": "Reserve key ranges",
+      "protocol": "TCP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "expiry-cleanup-worker",
+      "to": "url-database",
+      "label": "Delete expired mappings",
+      "protocol": "TCP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "expiry-cleanup-worker",
+      "to": "url-cache",
+      "label": "Evict expired codes",
+      "protocol": "RESP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    }
+  ]
+}
