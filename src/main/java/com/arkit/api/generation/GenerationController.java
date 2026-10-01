@@ -3,7 +3,6 @@ package com.arkit.api.generation;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.springframework.boot.jackson.autoconfigure.JacksonProperties.Json;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
