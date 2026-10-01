@@ -1,0 +1,492 @@
+{
+  "nodes": [
+    {
+      "id": "rider-app",
+      "label": "Rider Mobile App",
+      "type": "CLIENT",
+      "layer": "CLIENT",
+      "description": "iOS/Android app for riders to request rides, track drivers, and pay"
+    },
+    {
+      "id": "driver-app",
+      "label": "Driver Mobile App",
+      "type": "CLIENT",
+      "layer": "CLIENT",
+      "description": "App for drivers to go online, stream location, and accept trips"
+    },
+    {
+      "id": "admin-dashboard",
+      "label": "Admin Web Dashboard",
+      "type": "CLIENT",
+      "layer": "CLIENT",
+      "description": "Internal web console for operations, support, and analytics"
+    },
+    {
+      "id": "cdn",
+      "label": "CDN",
+      "type": "CDN",
+      "layer": "EDGE",
+      "description": "Serves static assets, map tiles, and dashboard bundles"
+    },
+    {
+      "id": "load-balancer",
+      "label": "Load Balancer",
+      "type": "LOAD_BALANCER",
+      "layer": "EDGE",
+      "description": "Distributes HTTPS and WebSocket traffic across gateway instances"
+    },
+    {
+      "id": "api-gateway",
+      "label": "API Gateway",
+      "type": "GATEWAY",
+      "layer": "EDGE",
+      "description": "Handles auth, rate limiting, and routing to backend services"
+    },
+    {
+      "id": "realtime-gateway",
+      "label": "Realtime WebSocket Gateway",
+      "type": "GATEWAY",
+      "layer": "EDGE",
+      "description": "Maintains persistent connections for live location and trip updates"
+    },
+    {
+      "id": "user-service",
+      "label": "User & Auth Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Manages rider and driver accounts, profiles, and authentication"
+    },
+    {
+      "id": "location-service",
+      "label": "Location Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Ingests driver GPS pings and maintains geospatial index of available drivers"
+    },
+    {
+      "id": "matching-service",
+      "label": "Dispatch / Matching Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Matches ride requests to nearby drivers using ETA and supply data"
+    },
+    {
+      "id": "trip-service",
+      "label": "Trip Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Manages trip lifecycle from request to completion"
+    },
+    {
+      "id": "pricing-service",
+      "label": "Pricing & Surge Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Computes fare estimates and dynamic surge multipliers"
+    },
+    {
+      "id": "payment-service",
+      "label": "Payment Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Handles charges, refunds, and driver payouts"
+    },
+    {
+      "id": "notification-worker",
+      "label": "Notification Worker",
+      "type": "WORKER",
+      "layer": "APPLICATION",
+      "description": "Sends push notifications, SMS, and emails for trip events"
+    },
+    {
+      "id": "analytics-worker",
+      "label": "Analytics Worker",
+      "type": "WORKER",
+      "layer": "APPLICATION",
+      "description": "Consumes events to build demand forecasts, surge inputs, and reports"
+    },
+    {
+      "id": "event-bus",
+      "label": "Event Bus",
+      "type": "QUEUE",
+      "layer": "DATA",
+      "description": "Kafka-style stream for trip, location, and payment events"
+    },
+    {
+      "id": "geo-cache",
+      "label": "Geospatial Cache",
+      "type": "CACHE",
+      "layer": "DATA",
+      "description": "Redis with geo indexes holding live driver positions and status"
+    },
+    {
+      "id": "session-cache",
+      "label": "Session Cache",
+      "type": "CACHE",
+      "layer": "DATA",
+      "description": "Stores session tokens and hot user data"
+    },
+    {
+      "id": "user-db",
+      "label": "User Database",
+      "type": "DATABASE",
+      "layer": "DATA",
+      "description": "Relational store for rider and driver profiles"
+    },
+    {
+      "id": "trip-db",
+      "label": "Trip Database",
+      "type": "DATABASE",
+      "layer": "DATA",
+      "description": "Sharded relational store for trip records and state"
+    },
+    {
+      "id": "payment-db",
+      "label": "Payment Database",
+      "type": "DATABASE",
+      "layer": "DATA",
+      "description": "ACID-compliant ledger for transactions and payouts"
+    },
+    {
+      "id": "location-history-db",
+      "label": "Location History Store",
+      "type": "DATABASE",
+      "layer": "DATA",
+      "description": "Time-series store of GPS traces for route reconstruction and disputes"
+    },
+    {
+      "id": "object-storage",
+      "label": "Object Storage",
+      "type": "STORAGE",
+      "layer": "DATA",
+      "description": "Stores driver documents, receipts, and analytics data lake files"
+    },
+    {
+      "id": "maps-provider",
+      "label": "Maps & Routing Provider",
+      "type": "EXTERNAL_SERVICE",
+      "layer": "EXTERNAL",
+      "description": "Third-party API for geocoding, routing, and ETA calculation"
+    },
+    {
+      "id": "payment-gateway",
+      "label": "Payment Gateway",
+      "type": "EXTERNAL_SERVICE",
+      "layer": "EXTERNAL",
+      "description": "Third-party processor for cards, wallets, and UPI"
+    },
+    {
+      "id": "push-sms-provider",
+      "label": "Push & SMS Provider",
+      "type": "EXTERNAL_SERVICE",
+      "layer": "EXTERNAL",
+      "description": "APNs/FCM and SMS gateway for user notifications"
+    }
+  ],
+  "edges": [
+    {
+      "from": "rider-app",
+      "to": "cdn",
+      "label": "Fetch static assets and map tiles",
+      "protocol": "HTTPS",
+      "direction": "ONE_WAY",
+      "communication": "SYNC"
+    },
+    {
+      "from": "driver-app",
+      "to": "cdn",
+      "label": "Fetch static assets and map tiles",
+      "protocol": "HTTPS",
+      "direction": "ONE_WAY",
+      "communication": "SYNC"
+    },
+    {
+      "from": "admin-dashboard",
+      "to": "cdn",
+      "label": "Load dashboard bundle",
+      "protocol": "HTTPS",
+      "direction": "ONE_WAY",
+      "communication": "SYNC"
+    },
+    {
+      "from": "rider-app",
+      "to": "load-balancer",
+      "label": "API requests and live trip updates",
+      "protocol": "HTTPS/WSS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "driver-app",
+      "to": "load-balancer",
+      "label": "API requests and location stream",
+      "protocol": "HTTPS/WSS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "admin-dashboard",
+      "to": "load-balancer",
+      "label": "Admin API requests",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "load-balancer",
+      "to": "api-gateway",
+      "label": "Route REST traffic",
+      "protocol": "HTTP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "load-balancer",
+      "to": "realtime-gateway",
+      "label": "Route WebSocket connections",
+      "protocol": "WebSocket",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "user-service",
+      "label": "Auth and profile requests",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "trip-service",
+      "label": "Ride requests and trip actions",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "pricing-service",
+      "label": "Fare estimate requests",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "payment-service",
+      "label": "Payment method and receipt requests",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "realtime-gateway",
+      "to": "location-service",
+      "label": "Forward driver GPS pings",
+      "protocol": "gRPC stream",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "realtime-gateway",
+      "to": "event-bus",
+      "label": "Subscribe to trip and location events for push to clients",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "user-service",
+      "to": "user-db",
+      "label": "Read/write user profiles",
+      "protocol": "SQL",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "user-service",
+      "to": "session-cache",
+      "label": "Store and validate sessions",
+      "protocol": "Redis",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "user-service",
+      "to": "object-storage",
+      "label": "Store driver documents",
+      "protocol": "S3 API",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "location-service",
+      "to": "geo-cache",
+      "label": "Update live driver positions",
+      "protocol": "Redis GEO",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "location-service",
+      "to": "location-history-db",
+      "label": "Persist GPS traces",
+      "protocol": "TCP",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "location-service",
+      "to": "event-bus",
+      "label": "Publish location updates",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "trip-service",
+      "to": "matching-service",
+      "label": "Request driver match",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "trip-service",
+      "to": "pricing-service",
+      "label": "Lock fare for trip",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "trip-service",
+      "to": "trip-db",
+      "label": "Read/write trip state",
+      "protocol": "SQL",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "trip-service",
+      "to": "event-bus",
+      "label": "Publish trip lifecycle events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "matching-service",
+      "to": "geo-cache",
+      "label": "Query nearby available drivers",
+      "protocol": "Redis GEO",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "matching-service",
+      "to": "maps-provider",
+      "label": "Compute ETAs to pickup",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "matching-service",
+      "to": "event-bus",
+      "label": "Publish driver offer events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "pricing-service",
+      "to": "maps-provider",
+      "label": "Route distance and duration",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "pricing-service",
+      "to": "geo-cache",
+      "label": "Read supply/demand and surge multipliers",
+      "protocol": "Redis",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "event-bus",
+      "to": "payment-service",
+      "label": "Trip completed events trigger charge",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "payment-service",
+      "to": "payment-db",
+      "label": "Record transactions in ledger",
+      "protocol": "SQL",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "payment-service",
+      "to": "payment-gateway",
+      "label": "Charge riders and pay out drivers",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "payment-service",
+      "to": "event-bus",
+      "label": "Publish payment events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "event-bus",
+      "to": "notification-worker",
+      "label": "Consume trip and payment events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "notification-worker",
+      "to": "push-sms-provider",
+      "label": "Send push and SMS notifications",
+      "protocol": "HTTPS",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "event-bus",
+      "to": "analytics-worker",
+      "label": "Consume all domain events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "analytics-worker",
+      "to": "object-storage",
+      "label": "Write data lake files",
+      "protocol": "S3 API",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "analytics-worker",
+      "to": "geo-cache",
+      "label": "Update demand heatmaps and surge inputs",
+      "protocol": "Redis",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    }
+  ]
+}

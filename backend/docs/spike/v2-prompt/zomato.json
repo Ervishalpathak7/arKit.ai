@@ -1,0 +1,234 @@
+{
+  "nodes": [
+    {
+      "id": "customer-app",
+      "label": "Customer App",
+      "type": "CLIENT",
+      "layer": "CLIENT",
+      "description": "Mobile/web app for browsing restaurants, placing orders, paying, and tracking deliveries"
+    },
+    {
+      "id": "restaurant-app",
+      "label": "Restaurant Partner App",
+      "type": "CLIENT",
+      "layer": "CLIENT",
+      "description": "App for restaurants to manage menus, accept orders, and mark food ready"
+    },
+    {
+      "id": "delivery-partner-app",
+      "label": "Delivery Partner App",
+      "type": "CLIENT",
+      "layer": "CLIENT",
+      "description": "App for riders to accept delivery tasks, navigate, and stream live location"
+    },
+    {
+      "id": "api-gateway",
+      "label": "API Gateway",
+      "type": "GATEWAY",
+      "layer": "EDGE",
+      "description": "Single entry point handling auth, rate limiting, and routing to backend services"
+    },
+    {
+      "id": "restaurant-catalog-service",
+      "label": "Restaurant & Menu Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Serves restaurant discovery, search, menus, and availability"
+    },
+    {
+      "id": "order-service",
+      "label": "Order Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Manages cart checkout, order lifecycle, and payment orchestration"
+    },
+    {
+      "id": "delivery-service",
+      "label": "Delivery & Dispatch Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Assigns nearest available riders, tracks live location, and computes ETAs"
+    },
+    {
+      "id": "notification-worker",
+      "label": "Notification Worker",
+      "type": "WORKER",
+      "layer": "APPLICATION",
+      "description": "Consumes order and delivery events and sends push/SMS notifications"
+    },
+    {
+      "id": "event-queue",
+      "label": "Event Stream",
+      "type": "QUEUE",
+      "layer": "DATA",
+      "description": "Kafka topics carrying order and delivery status events between services"
+    },
+    {
+      "id": "cache",
+      "label": "Redis Cache",
+      "type": "CACHE",
+      "layer": "DATA",
+      "description": "Caches hot menus and stores geo-indexed real-time rider locations"
+    },
+    {
+      "id": "primary-db",
+      "label": "Primary Database",
+      "type": "DATABASE",
+      "layer": "DATA",
+      "description": "Relational store for users, restaurants, menus, orders, and delivery records"
+    },
+    {
+      "id": "payment-gateway",
+      "label": "Payment Gateway",
+      "type": "EXTERNAL_SERVICE",
+      "layer": "EXTERNAL",
+      "description": "Third-party provider processing card, UPI, and wallet payments"
+    }
+  ],
+  "edges": [
+    {
+      "from": "customer-app",
+      "to": "api-gateway",
+      "label": "Browse, place orders, track delivery",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "restaurant-app",
+      "to": "api-gateway",
+      "label": "Accept orders, update order status",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "delivery-partner-app",
+      "to": "api-gateway",
+      "label": "Accept tasks, send location updates",
+      "protocol": "WebSocket",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "restaurant-catalog-service",
+      "label": "Search restaurants and fetch menus",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "order-service",
+      "label": "Create and update orders",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "delivery-service",
+      "label": "Rider location, task acceptance, tracking",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "restaurant-catalog-service",
+      "to": "cache",
+      "label": "Read cached menus",
+      "protocol": "Redis",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "restaurant-catalog-service",
+      "to": "primary-db",
+      "label": "Read/write restaurant and menu data",
+      "protocol": "SQL",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "order-service",
+      "to": "payment-gateway",
+      "label": "Initiate payment",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "payment-gateway",
+      "to": "order-service",
+      "label": "Payment status callback",
+      "protocol": "HTTPS Webhook",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "order-service",
+      "to": "primary-db",
+      "label": "Persist orders",
+      "protocol": "SQL",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "order-service",
+      "to": "event-queue",
+      "label": "Publish order events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "event-queue",
+      "to": "delivery-service",
+      "label": "Order confirmed/ready events trigger dispatch",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "delivery-service",
+      "to": "cache",
+      "label": "Update and query rider geo-locations",
+      "protocol": "Redis",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "delivery-service",
+      "to": "primary-db",
+      "label": "Persist delivery assignments",
+      "protocol": "SQL",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "delivery-service",
+      "to": "event-queue",
+      "label": "Publish delivery status events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "event-queue",
+      "to": "notification-worker",
+      "label": "Consume order and delivery events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "notification-worker",
+      "to": "customer-app",
+      "label": "Push order status notifications",
+      "protocol": "FCM/APNs",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    }
+  ]
+}

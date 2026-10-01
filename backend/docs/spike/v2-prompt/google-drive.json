@@ -1,0 +1,226 @@
+{
+  "nodes": [
+    {
+      "id": "desktop-client",
+      "label": "Desktop/Mobile Sync Client",
+      "type": "CLIENT",
+      "layer": "CLIENT",
+      "description": "Watches local folders, chunks files, uploads and downloads changes"
+    },
+    {
+      "id": "cdn",
+      "label": "CDN",
+      "type": "CDN",
+      "layer": "EDGE",
+      "description": "Caches and serves frequently downloaded file chunks close to users"
+    },
+    {
+      "id": "load-balancer",
+      "label": "Load Balancer",
+      "type": "LOAD_BALANCER",
+      "layer": "EDGE",
+      "description": "Distributes incoming client traffic across gateway instances"
+    },
+    {
+      "id": "api-gateway",
+      "label": "API Gateway",
+      "type": "GATEWAY",
+      "layer": "EDGE",
+      "description": "Authenticates requests, rate limits, and routes to backend services"
+    },
+    {
+      "id": "metadata-service",
+      "label": "Metadata Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Manages file and folder hierarchy, versions, sharing, and chunk manifests"
+    },
+    {
+      "id": "block-service",
+      "label": "Block Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Handles deduplicated chunk uploads and downloads by content hash"
+    },
+    {
+      "id": "notification-service",
+      "label": "Sync Notification Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Holds long-lived client connections and pushes change notifications"
+    },
+    {
+      "id": "processing-worker",
+      "label": "File Processing Worker",
+      "type": "WORKER",
+      "layer": "APPLICATION",
+      "description": "Generates thumbnails and previews and indexes file content for search"
+    },
+    {
+      "id": "message-queue",
+      "label": "Event Queue",
+      "type": "QUEUE",
+      "layer": "DATA",
+      "description": "Streams file change events to sync and processing consumers"
+    },
+    {
+      "id": "metadata-cache",
+      "label": "Metadata Cache",
+      "type": "CACHE",
+      "layer": "DATA",
+      "description": "Caches hot file metadata and chunk manifests"
+    },
+    {
+      "id": "metadata-db",
+      "label": "Metadata Database",
+      "type": "DATABASE",
+      "layer": "DATA",
+      "description": "Sharded relational store for users, files, versions, and permissions"
+    },
+    {
+      "id": "object-storage",
+      "label": "Block Object Storage",
+      "type": "STORAGE",
+      "layer": "DATA",
+      "description": "Durable storage of content-addressed file chunks and previews"
+    }
+  ],
+  "edges": [
+    {
+      "from": "desktop-client",
+      "to": "load-balancer",
+      "label": "API and sync requests",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "desktop-client",
+      "to": "cdn",
+      "label": "Download file chunks",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "cdn",
+      "to": "object-storage",
+      "label": "Fetch chunk on cache miss",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "load-balancer",
+      "to": "api-gateway",
+      "label": "Forward requests",
+      "protocol": "HTTP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "metadata-service",
+      "label": "File and folder operations",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "block-service",
+      "label": "Upload and download chunks",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "notification-service",
+      "label": "Subscribe to change stream",
+      "protocol": "WebSocket",
+      "direction": "BIDIRECTIONAL",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "block-service",
+      "to": "object-storage",
+      "label": "Store and retrieve chunks",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "block-service",
+      "to": "metadata-service",
+      "label": "Check and register chunk hashes",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "metadata-service",
+      "to": "metadata-cache",
+      "label": "Read and write hot metadata",
+      "protocol": "Redis",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "metadata-service",
+      "to": "metadata-db",
+      "label": "Persist files and versions",
+      "protocol": "SQL",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "metadata-service",
+      "to": "message-queue",
+      "label": "Publish file change events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "message-queue",
+      "to": "notification-service",
+      "label": "Deliver change events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "message-queue",
+      "to": "processing-worker",
+      "label": "Deliver processing jobs",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "notification-service",
+      "to": "desktop-client",
+      "label": "Push change notifications",
+      "protocol": "WebSocket",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "processing-worker",
+      "to": "object-storage",
+      "label": "Read files and write previews",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "processing-worker",
+      "to": "metadata-service",
+      "label": "Update preview and index metadata",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    }
+  ]
+}

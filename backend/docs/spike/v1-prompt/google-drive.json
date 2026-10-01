@@ -1,0 +1,511 @@
+{
+  "nodes": [
+    {
+      "id": "web-client",
+      "label": "Web App",
+      "type": "CLIENT",
+      "layer": "CLIENT",
+      "description": "Browser-based UI for browsing, uploading, sharing and previewing files"
+    },
+    {
+      "id": "desktop-sync-client",
+      "label": "Desktop Sync Client",
+      "type": "CLIENT",
+      "layer": "CLIENT",
+      "description": "Background agent that syncs local folders with the cloud using chunked delta uploads"
+    },
+    {
+      "id": "mobile-client",
+      "label": "Mobile App",
+      "type": "CLIENT",
+      "layer": "CLIENT",
+      "description": "iOS/Android app for file access, camera uploads and offline files"
+    },
+    {
+      "id": "cdn",
+      "label": "CDN",
+      "type": "CDN",
+      "layer": "EDGE",
+      "description": "Caches static assets, thumbnails and publicly shared file downloads close to users"
+    },
+    {
+      "id": "load-balancer",
+      "label": "Load Balancer",
+      "type": "LOAD_BALANCER",
+      "layer": "EDGE",
+      "description": "Distributes HTTPS and WebSocket traffic across gateway instances"
+    },
+    {
+      "id": "api-gateway",
+      "label": "API Gateway",
+      "type": "GATEWAY",
+      "layer": "EDGE",
+      "description": "Handles TLS termination, authentication checks, rate limiting and request routing"
+    },
+    {
+      "id": "auth-service",
+      "label": "Auth Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Manages login, OAuth/SSO, session tokens and API keys"
+    },
+    {
+      "id": "metadata-service",
+      "label": "Metadata Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Manages file/folder hierarchy, versions, renames, moves and trash"
+    },
+    {
+      "id": "upload-service",
+      "label": "Upload/Download Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Coordinates resumable chunked uploads, deduplication and issues pre-signed URLs"
+    },
+    {
+      "id": "sync-service",
+      "label": "Sync Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Computes change journals and pushes real-time updates to connected clients"
+    },
+    {
+      "id": "sharing-service",
+      "label": "Sharing & Permissions Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Manages ACLs, share links, collaborators and access checks"
+    },
+    {
+      "id": "search-service",
+      "label": "Search Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Serves full-text and metadata search queries over user files"
+    },
+    {
+      "id": "notification-service",
+      "label": "Notification Service",
+      "type": "WORKER",
+      "layer": "APPLICATION",
+      "description": "Sends email and push notifications for shares, comments and quota alerts"
+    },
+    {
+      "id": "processing-worker",
+      "label": "File Processing Workers",
+      "type": "WORKER",
+      "layer": "APPLICATION",
+      "description": "Generates thumbnails and previews, extracts text and runs virus scanning"
+    },
+    {
+      "id": "indexing-worker",
+      "label": "Indexing Worker",
+      "type": "WORKER",
+      "layer": "APPLICATION",
+      "description": "Consumes file change events and updates the search index"
+    },
+    {
+      "id": "message-queue",
+      "label": "Event Queue",
+      "type": "QUEUE",
+      "layer": "DATA",
+      "description": "Kafka-style log of file change events for async processing and fan-out"
+    },
+    {
+      "id": "metadata-db",
+      "label": "Metadata Database",
+      "type": "DATABASE",
+      "layer": "DATA",
+      "description": "Sharded relational DB storing users, file tree, versions, chunk maps and ACLs"
+    },
+    {
+      "id": "cache",
+      "label": "Distributed Cache",
+      "type": "CACHE",
+      "layer": "DATA",
+      "description": "Redis cache for sessions, hot metadata, permission lookups and rate-limit counters"
+    },
+    {
+      "id": "block-storage",
+      "label": "Object Storage",
+      "type": "STORAGE",
+      "layer": "DATA",
+      "description": "Durable, replicated blob store holding content-addressed file chunks"
+    },
+    {
+      "id": "preview-storage",
+      "label": "Preview Storage",
+      "type": "STORAGE",
+      "layer": "DATA",
+      "description": "Stores generated thumbnails and document previews"
+    },
+    {
+      "id": "search-index",
+      "label": "Search Index",
+      "type": "DATABASE",
+      "layer": "DATA",
+      "description": "Elasticsearch cluster indexing filenames, metadata and extracted content"
+    },
+    {
+      "id": "identity-provider",
+      "label": "External Identity Provider",
+      "type": "EXTERNAL_SERVICE",
+      "layer": "EXTERNAL",
+      "description": "Third-party SSO/OAuth providers such as Google or SAML IdPs"
+    },
+    {
+      "id": "email-push-provider",
+      "label": "Email & Push Providers",
+      "type": "EXTERNAL_SERVICE",
+      "layer": "EXTERNAL",
+      "description": "External email (SMTP/SES) and mobile push (APNs/FCM) delivery services"
+    }
+  ],
+  "edges": [
+    {
+      "from": "web-client",
+      "to": "cdn",
+      "label": "Fetch static assets and thumbnails",
+      "protocol": "HTTPS",
+      "direction": "ONE_WAY",
+      "communication": "SYNC"
+    },
+    {
+      "from": "mobile-client",
+      "to": "cdn",
+      "label": "Fetch thumbnails and shared files",
+      "protocol": "HTTPS",
+      "direction": "ONE_WAY",
+      "communication": "SYNC"
+    },
+    {
+      "from": "web-client",
+      "to": "load-balancer",
+      "label": "API requests",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "desktop-sync-client",
+      "to": "load-balancer",
+      "label": "Sync API and change notifications",
+      "protocol": "HTTPS/WebSocket",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "mobile-client",
+      "to": "load-balancer",
+      "label": "API requests",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "load-balancer",
+      "to": "api-gateway",
+      "label": "Forward traffic",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "auth-service",
+      "label": "Validate tokens",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "metadata-service",
+      "label": "File and folder operations",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "upload-service",
+      "label": "Initiate uploads and downloads",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "sync-service",
+      "label": "Long-poll / WebSocket sync sessions",
+      "protocol": "WebSocket",
+      "direction": "BIDIRECTIONAL",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "sharing-service",
+      "label": "Share and permission requests",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "search-service",
+      "label": "Search queries",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "cache",
+      "label": "Rate-limit counters",
+      "protocol": "Redis",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "auth-service",
+      "to": "identity-provider",
+      "label": "SSO / OAuth flows",
+      "protocol": "OIDC/SAML over HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "auth-service",
+      "to": "cache",
+      "label": "Session storage",
+      "protocol": "Redis",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "auth-service",
+      "to": "metadata-db",
+      "label": "User accounts",
+      "protocol": "SQL",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "desktop-sync-client",
+      "to": "block-storage",
+      "label": "Upload/download chunks via pre-signed URLs",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "web-client",
+      "to": "block-storage",
+      "label": "Upload/download chunks via pre-signed URLs",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "mobile-client",
+      "to": "block-storage",
+      "label": "Upload/download chunks via pre-signed URLs",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "upload-service",
+      "to": "block-storage",
+      "label": "Generate pre-signed URLs, verify chunks",
+      "protocol": "S3 API",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "upload-service",
+      "to": "metadata-service",
+      "label": "Commit file version and chunk map",
+      "protocol": "gRPC",
+      "direction": "ONE_WAY",
+      "communication": "SYNC"
+    },
+    {
+      "from": "upload-service",
+      "to": "sharing-service",
+      "label": "Check access before download",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "metadata-service",
+      "to": "metadata-db",
+      "label": "Read/write file tree and versions",
+      "protocol": "SQL",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "metadata-service",
+      "to": "cache",
+      "label": "Cache hot metadata",
+      "protocol": "Redis",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "metadata-service",
+      "to": "sharing-service",
+      "label": "Authorize operations",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "metadata-service",
+      "to": "message-queue",
+      "label": "Publish file change events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "sharing-service",
+      "to": "metadata-db",
+      "label": "Read/write ACLs and share links",
+      "protocol": "SQL",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "sharing-service",
+      "to": "cache",
+      "label": "Cache permission lookups",
+      "protocol": "Redis",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "sharing-service",
+      "to": "message-queue",
+      "label": "Publish share events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "message-queue",
+      "to": "sync-service",
+      "label": "Consume change events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "sync-service",
+      "to": "metadata-db",
+      "label": "Read change journal by cursor",
+      "protocol": "SQL",
+      "direction": "ONE_WAY",
+      "communication": "SYNC"
+    },
+    {
+      "from": "message-queue",
+      "to": "processing-worker",
+      "label": "Consume new-file events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "processing-worker",
+      "to": "block-storage",
+      "label": "Read original file content",
+      "protocol": "S3 API",
+      "direction": "ONE_WAY",
+      "communication": "SYNC"
+    },
+    {
+      "from": "processing-worker",
+      "to": "preview-storage",
+      "label": "Write thumbnails and previews",
+      "protocol": "S3 API",
+      "direction": "ONE_WAY",
+      "communication": "SYNC"
+    },
+    {
+      "from": "processing-worker",
+      "to": "message-queue",
+      "label": "Publish extracted text and scan results",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "message-queue",
+      "to": "indexing-worker",
+      "label": "Consume change and text-extraction events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "indexing-worker",
+      "to": "search-index",
+      "label": "Index documents",
+      "protocol": "HTTP/REST",
+      "direction": "ONE_WAY",
+      "communication": "SYNC"
+    },
+    {
+      "from": "search-service",
+      "to": "search-index",
+      "label": "Query index",
+      "protocol": "HTTP/REST",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "search-service",
+      "to": "sharing-service",
+      "label": "Filter results by permissions",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "message-queue",
+      "to": "notification-service",
+      "label": "Consume share and alert events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "notification-service",
+      "to": "email-push-provider",
+      "label": "Send emails and push notifications",
+      "protocol": "HTTPS",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "cdn",
+      "to": "preview-storage",
+      "label": "Origin fetch for thumbnails",
+      "protocol": "HTTPS",
+      "direction": "ONE_WAY",
+      "communication": "SYNC"
+    },
+    {
+      "from": "cdn",
+      "to": "block-storage",
+      "label": "Origin fetch for public shared files",
+      "protocol": "HTTPS",
+      "direction": "ONE_WAY",
+      "communication": "SYNC"
+    }
+  ]
+}
