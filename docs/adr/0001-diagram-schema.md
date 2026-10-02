@@ -1,4 +1,4 @@
-# 0001: Diagram Schema
+### 0001: Diagram Schema
 
 ## Status
 Accepted
