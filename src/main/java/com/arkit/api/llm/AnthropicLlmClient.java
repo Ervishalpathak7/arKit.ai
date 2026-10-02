@@ -11,7 +11,7 @@ import com.arkit.api.generation.types.Message;
 import com.arkit.api.generation.types.MessageRequest;
 import com.arkit.api.generation.types.MessageResponse;
 
-@Component 
+@Component
 class AnthropicLlmClient implements LlmClient {
 
     private final RestClient restClient;
@@ -33,7 +33,7 @@ class AnthropicLlmClient implements LlmClient {
                 .body(MessageResponse.class);
 
         if (response == null || response.content() == null || response.content().isEmpty()) {
-            throw new LlmResponseException("Model returned no content", null);
+            throw new LlmResponseException("Model returned no content");
         }
         return response.content().get(0).text();
 
