@@ -20,15 +20,17 @@ import tools.jackson.databind.ObjectMapper;
 public class GenerationController {
 
     private final ObjectMapper objectMapper;
+    private final GenerationService service;
 
-    GenerationController(ObjectMapper om) {
+    GenerationController(ObjectMapper om, GenerationService service) {
         this.objectMapper = om;
+        this.service = service;
     }
 
     @PostMapping
     public ResponseEntity<ArchitectureGraph> CreateArchitecture(
             @Valid @RequestBody GenerateArchitecturesRequest req) {
-        ArchitectureGraph graph = hardcodedGraph();
+        ArchitectureGraph graph = service.GenerateArchitecture(req.description());
         return ResponseEntity.ok(graph);
     }
 
