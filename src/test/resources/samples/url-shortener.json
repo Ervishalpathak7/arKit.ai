@@ -1,0 +1,270 @@
+{
+  "nodes": [
+    {
+      "id": "web-client",
+      "label": "Web / Mobile Client",
+      "type": "CLIENT",
+      "layer": "CLIENT",
+      "description": "Browsers and apps that create short URLs and follow redirects"
+    },
+    {
+      "id": "cdn",
+      "label": "CDN",
+      "type": "CDN",
+      "layer": "EDGE",
+      "description": "Caches popular redirect responses at edge locations"
+    },
+    {
+      "id": "load-balancer",
+      "label": "Load Balancer",
+      "type": "LOAD_BALANCER",
+      "layer": "EDGE",
+      "description": "Distributes incoming traffic across API gateway instances"
+    },
+    {
+      "id": "api-gateway",
+      "label": "API Gateway",
+      "type": "GATEWAY",
+      "layer": "EDGE",
+      "description": "Handles auth, rate limiting, and routing to backend services"
+    },
+    {
+      "id": "shortener-service",
+      "label": "URL Shortener Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Creates short codes and stores long-to-short URL mappings"
+    },
+    {
+      "id": "redirect-service",
+      "label": "Redirect Service",
+      "type": "API_SERVER",
+      "layer": "APPLICATION",
+      "description": "Resolves short codes and returns HTTP 301/302 redirects"
+    },
+    {
+      "id": "id-generator",
+      "label": "Key Generation Service",
+      "type": "OTHER",
+      "layer": "APPLICATION",
+      "description": "Pre-generates unique base62 keys to avoid collisions"
+    },
+    {
+      "id": "analytics-worker",
+      "label": "Analytics Worker",
+      "type": "WORKER",
+      "layer": "APPLICATION",
+      "description": "Consumes click events and aggregates usage statistics"
+    },
+    {
+      "id": "cleanup-worker",
+      "label": "Expiry Cleanup Worker",
+      "type": "WORKER",
+      "layer": "APPLICATION",
+      "description": "Periodically purges expired short URLs"
+    },
+    {
+      "id": "redis-cache",
+      "label": "Redis Cache",
+      "type": "CACHE",
+      "layer": "DATA",
+      "description": "Caches hot short-code to long-URL mappings for fast lookups"
+    },
+    {
+      "id": "url-db",
+      "label": "URL Mapping Database",
+      "type": "DATABASE",
+      "layer": "DATA",
+      "description": "Sharded NoSQL store for short code, long URL, owner, and expiry"
+    },
+    {
+      "id": "key-db",
+      "label": "Key Store Database",
+      "type": "DATABASE",
+      "layer": "DATA",
+      "description": "Holds pools of unused and allocated short keys"
+    },
+    {
+      "id": "click-queue",
+      "label": "Click Event Queue",
+      "type": "QUEUE",
+      "layer": "DATA",
+      "description": "Kafka topic buffering redirect click events"
+    },
+    {
+      "id": "analytics-db",
+      "label": "Analytics Database",
+      "type": "DATABASE",
+      "layer": "DATA",
+      "description": "Columnar store for click counts, referrers, and geo stats"
+    },
+    {
+      "id": "auth-provider",
+      "label": "Identity Provider",
+      "type": "EXTERNAL_SERVICE",
+      "layer": "EXTERNAL",
+      "description": "OAuth/OIDC provider for user authentication"
+    },
+    {
+      "id": "safe-browsing",
+      "label": "URL Safety Check API",
+      "type": "EXTERNAL_SERVICE",
+      "layer": "EXTERNAL",
+      "description": "Screens submitted URLs for malware and phishing"
+    }
+  ],
+  "edges": [
+    {
+      "from": "web-client",
+      "to": "cdn",
+      "label": "Short URL request / redirect",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "cdn",
+      "to": "load-balancer",
+      "label": "Cache miss forward",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "web-client",
+      "to": "load-balancer",
+      "label": "Create short URL",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "load-balancer",
+      "to": "api-gateway",
+      "label": "Route traffic",
+      "protocol": "HTTP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "auth-provider",
+      "label": "Validate token",
+      "protocol": "HTTPS/OIDC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "shortener-service",
+      "label": "POST /urls",
+      "protocol": "HTTP/REST",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "api-gateway",
+      "to": "redirect-service",
+      "label": "GET /{code}",
+      "protocol": "HTTP/REST",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "shortener-service",
+      "to": "safe-browsing",
+      "label": "Check URL safety",
+      "protocol": "HTTPS",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "shortener-service",
+      "to": "id-generator",
+      "label": "Fetch unique key",
+      "protocol": "gRPC",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "id-generator",
+      "to": "key-db",
+      "label": "Allocate key batch",
+      "protocol": "SQL",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "shortener-service",
+      "to": "url-db",
+      "label": "Write mapping",
+      "protocol": "TCP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "shortener-service",
+      "to": "redis-cache",
+      "label": "Warm cache",
+      "protocol": "RESP",
+      "direction": "ONE_WAY",
+      "communication": "SYNC"
+    },
+    {
+      "from": "redirect-service",
+      "to": "redis-cache",
+      "label": "Lookup short code",
+      "protocol": "RESP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "redirect-service",
+      "to": "url-db",
+      "label": "Lookup on cache miss",
+      "protocol": "TCP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "SYNC"
+    },
+    {
+      "from": "redirect-service",
+      "to": "click-queue",
+      "label": "Publish click event",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "click-queue",
+      "to": "analytics-worker",
+      "label": "Consume click events",
+      "protocol": "Kafka",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "analytics-worker",
+      "to": "analytics-db",
+      "label": "Write aggregates",
+      "protocol": "TCP",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "cleanup-worker",
+      "to": "url-db",
+      "label": "Delete expired mappings",
+      "protocol": "TCP",
+      "direction": "BIDIRECTIONAL",
+      "communication": "ASYNC"
+    },
+    {
+      "from": "cleanup-worker",
+      "to": "redis-cache",
+      "label": "Evict expired keys",
+      "protocol": "RESP",
+      "direction": "ONE_WAY",
+      "communication": "ASYNC"
+    }
+  ]
+}
