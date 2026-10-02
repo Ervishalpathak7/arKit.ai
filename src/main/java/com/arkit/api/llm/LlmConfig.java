@@ -9,7 +9,7 @@ import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
 @Configuration
-public class LlmConfig {
+class LlmConfig {
 
     @Bean
     RestClient anthropicRestClient(@Value("{llm.api-key}") String apikey) {

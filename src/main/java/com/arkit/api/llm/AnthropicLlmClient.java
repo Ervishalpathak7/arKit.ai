@@ -12,7 +12,7 @@ import com.arkit.api.generation.types.MessageRequest;
 import com.arkit.api.generation.types.MessageResponse;
 
 @Component 
-public class AnthropicLlmClient implements LlmClient {
+class AnthropicLlmClient implements LlmClient {
 
     private final RestClient restClient;
     private final String model;
