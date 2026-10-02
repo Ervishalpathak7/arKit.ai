@@ -25,7 +25,7 @@ public class ArchitectureParser {
             return objectMapper.readValue(json, ArchitectureGraph.class);
         } catch (RuntimeException ex) {
             log.error("Failed to parse LLM output of length {}", rawLlmOutput.length(), ex);
-            throw new LlmResponseException("Model returned unparsable output", ex);
+            throw new LlmResponseException("Model returned unparsable output");
         }
     }
 
@@ -33,7 +33,7 @@ public class ArchitectureParser {
         int start = raw.indexOf("{");
         int end = raw.lastIndexOf("}");
         if (start == -1 || end == -1 || end <= start) {
-            throw new LlmResponseException("No JSON object found in model output", null);
+            throw new LlmResponseException("No JSON object found in model output");
         }
 
         return raw.substring(start, end + 1);
