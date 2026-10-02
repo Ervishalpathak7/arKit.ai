@@ -12,7 +12,7 @@ import org.springframework.web.client.RestClient;
 class LlmConfig {
 
     @Bean
-    RestClient anthropicRestClient(@Value("{llm.api-key}") String apikey) {
+    RestClient anthropicRestClient(@Value("${llm.api-key}") String apikey) {
         var factory = new JdkClientHttpRequestFactory();
         factory.setReadTimeout(Duration.ofSeconds(60));
 
