@@ -59,7 +59,7 @@ public class RateLimiter {
      */
     public long retryAfterSeconds(String clientIp) {
         String normalisedIp = normaliseIp(clientIp);
-        Deque<Instant> timeStamps = requests.getIfPresent(clientIp);
+        Deque<Instant> timeStamps = requests.getIfPresent(normalisedIp);
         if (timeStamps == null)
             return 0;
         Instant oldest = timeStamps.peekFirst();
@@ -77,7 +77,7 @@ public class RateLimiter {
             }
             StringBuilder sb = new StringBuilder(16);
             for (int i = 0; i < 8; i++) {
-                sb.append(String.format("%02x", clientIp));
+                sb.append(String.format("%02x", bytes[i]));
             }
             return sb.toString();
         } catch (UnknownHostException e) {
