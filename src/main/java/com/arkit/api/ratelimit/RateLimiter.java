@@ -1,6 +1,8 @@
 package com.arkit.api.ratelimit;
 
 import java.util.ArrayDeque;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Deque;
@@ -33,8 +35,9 @@ public class RateLimiter {
         Instant now = Instant.now();
         Instant cutoff = now.minus(window);
         boolean[] allowed = new boolean[1];
+        String normalisedIp = normaliseIp(clientIp);
 
-        requests.asMap().compute(clientIp, (key, timestamps) -> {
+        requests.asMap().compute(normalisedIp, (key, timestamps) -> {
             if (timestamps == null) {
                 timestamps = new ArrayDeque<>();
             }
@@ -55,6 +58,7 @@ public class RateLimiter {
      * @return seconds until the oldest request in the window expires
      */
     public long retryAfterSeconds(String clientIp) {
+        String normalisedIp = normaliseIp(clientIp);
         Deque<Instant> timeStamps = requests.getIfPresent(clientIp);
         if (timeStamps == null)
             return 0;
@@ -63,6 +67,23 @@ public class RateLimiter {
             return 0;
         long seconds = Duration.between(Instant.now(), oldest.plus(window)).toSeconds();
         return Math.max(seconds, 1);
+    }
+
+    private String normaliseIp(String clientIp) {
+        try {
+            byte[] bytes = InetAddress.getByName(clientIp).getAddress();
+            if (bytes.length != 16) {
+                return clientIp;
+            }
+            StringBuilder sb = new StringBuilder(16);
+            for (int i = 0; i < 8; i++) {
+                sb.append(String.format("%02x", clientIp));
+            }
+            return sb.toString();
+        } catch (UnknownHostException e) {
+            return clientIp;
+        }
+
     }
 
 }
