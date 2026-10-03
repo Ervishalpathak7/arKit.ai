@@ -1,6 +1,6 @@
 services:
   api:
-    image: ghcr.io/Ervishal/arkit.ai:latest
+    image: ghcr.io/ervishalpathak7/arkit.ai:latest
     ports:
       - "8080:8080"
     env_file:
