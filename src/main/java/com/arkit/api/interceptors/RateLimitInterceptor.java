@@ -1,6 +1,10 @@
 package com.arkit.api.interceptors;
 
 import org.springframework.stereotype.Component;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,6 +42,24 @@ public class RateLimitInterceptor implements HandlerInterceptor {
 
     private String resolveClientIp(HttpServletRequest request) {
         String cfIp = request.getHeader("CF-Connecting-IP");
-        return (cfIp != null && !cfIp.isBlank()) ? cfIp : request.getRemoteAddr();
+        String raw = (cfIp != null && !cfIp.isBlank()) ? cfIp : request.getRemoteAddr();
+        return normaliseIp(raw);
+    }
+
+    private String normaliseIp(String clientIp) {
+        try {
+            byte[] bytes = InetAddress.getByName(clientIp).getAddress();
+            if (bytes.length != 16) {
+                return clientIp;
+            }
+            StringBuilder sb = new StringBuilder(16);
+            for (int i = 0; i < 8; i++) {
+                sb.append(String.format("%02x", clientIp));
+            }
+            return sb.toString();
+        } catch (UnknownHostException e) {
+            return clientIp;
+        }
+
     }
 }
