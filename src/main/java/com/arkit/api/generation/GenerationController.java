@@ -19,11 +19,11 @@ import tools.jackson.databind.ObjectMapper;
 @RequestMapping("/api/v1/architectures")
 public class GenerationController {
 
-    private final ObjectMapper objectMapper;
+    // private final ObjectMapper objectMapper;
     private final GenerationService service;
 
     GenerationController(ObjectMapper om, GenerationService service) {
-        this.objectMapper = om;
+        // this.objectMapper = om;
         this.service = service;
     }
 
@@ -34,12 +34,12 @@ public class GenerationController {
         return ResponseEntity.ok(graph);
     }
 
-    private ArchitectureGraph hardcodedGraph() {
-        try (InputStream in = getClass().getResourceAsStream("/samples/url-shortener.json")) {
-            return objectMapper.readValue(in, ArchitectureGraph.class);
-        } catch (IOException e) {
-            throw new IllegalStateException("sample graph missing", e);
-        }
-    }
+    // private ArchitectureGraph hardcodedGraph() {
+    //     try (InputStream in = getClass().getResourceAsStream("/samples/url-shortener.json")) {
+    //         return objectMapper.readValue(in, ArchitectureGraph.class);
+    //     } catch (IOException e) {
+    //         throw new IllegalStateException("sample graph missing", e);
+    //     }
+    // }
 
 }
