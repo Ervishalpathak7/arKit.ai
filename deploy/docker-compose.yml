@@ -7,9 +7,9 @@ services:
     env_file:
       - .env
     environment:
-      SPRING_DATABASE_URL: jdbc:postgresql://db:5432/arkit
-      SPRING_DATABASE_USERNAME: arkit
-      SPRING_DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/arkit
+      SPRING_DATASOURCE_USERNAME: arkit
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
       db:
         condition: service_healthy
