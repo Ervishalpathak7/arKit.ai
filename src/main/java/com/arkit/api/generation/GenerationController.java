@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.arkit.api.architecture.ArchitectureGraph;
-
 import jakarta.validation.Valid;
 import tools.jackson.databind.ObjectMapper;
 
@@ -22,9 +20,9 @@ public class GenerationController {
     }
 
     @PostMapping
-    public ResponseEntity<ArchitectureGraph> CreateArchitecture(
+    public ResponseEntity<Generation> CreateArchitecture(
             @Valid @RequestBody GenerateArchitecturesRequest req) {
-        ArchitectureGraph graph = service.GenerateArchitecture(req.description());
+        Generation graph = service.GenerateArchitecture(req.description());
         return ResponseEntity.ok(graph);
     }
 }
