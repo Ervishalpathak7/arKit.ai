@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "llm.model",
+      "type": "java.lang.String",
+      "description": "model name "
+    },
+    {
+      "name": "llm.api-key",
+      "type": "java.lang.String",
+      "description": "llm api-key"
+    }
+  ]
+}
