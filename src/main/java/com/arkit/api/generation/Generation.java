@@ -4,11 +4,9 @@ import java.time.Instant;
 import java.util.UUID;
 
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.annotations.UuidGenerator.Style;
 import org.hibernate.type.SqlTypes;
 
-import com.arkit.api.generation.types.ArchitectureGraph;
+import com.arkit.api.architecture.ArchitectureGraph;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

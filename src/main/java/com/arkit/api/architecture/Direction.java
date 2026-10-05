@@ -1,20 +1,19 @@
-package com.arkit.api.generation.types;
+package com.arkit.api.architecture;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum NodeType {
-    CLIENT, CDN, LOAD_BALANCER, GATEWAY, PROXY, API_SERVER,
-    WORKER, CACHE, DATABASE, STORAGE, QUEUE, EXTERNAL_SERVICE, OTHER;
+public enum Direction {
+    ONE_WAY, BIDIRECTIONAL;
 
     @JsonCreator
-    public static NodeType fromJson(String value) {
+    public static Direction fromJson(String value) {
         if (value == null)
-            return OTHER;
+            return BIDIRECTIONAL;
         try {
             return valueOf(value.trim().toUpperCase());
         } catch (IllegalArgumentException ex) {
-            return OTHER;
+            return BIDIRECTIONAL;
 
         }
     }

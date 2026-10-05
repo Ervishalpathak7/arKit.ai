@@ -1,13 +1,12 @@
-package com.arkit.api.generation;
+package com.arkit.api.architecture;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
-import com.arkit.api.generation.types.ArchitectureGraph;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import tools.jackson.databind.ObjectMapper;
 

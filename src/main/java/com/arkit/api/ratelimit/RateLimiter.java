@@ -14,7 +14,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 @Component
-public class RateLimiter {
+class RateLimiter {
     private final int maxRequest;
     private final Duration window;
     private final Cache<String, Deque<Instant>> requests;

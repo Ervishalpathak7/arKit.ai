@@ -1,19 +1,19 @@
-package com.arkit.api.generation.types;
+package com.arkit.api.architecture;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum Direction {
-    ONE_WAY, BIDIRECTIONAL;
+public enum Layer {
+    CLIENT, EDGE, APPLICATION, DATA, EXTERNAL;
 
     @JsonCreator
-    public static Direction fromJson(String value) {
+    public static Layer fromJson(String value) {
         if (value == null)
-            return BIDIRECTIONAL;
+            return APPLICATION;
         try {
             return valueOf(value.trim().toUpperCase());
         } catch (IllegalArgumentException ex) {
-            return BIDIRECTIONAL;
+            return APPLICATION;
 
         }
     }

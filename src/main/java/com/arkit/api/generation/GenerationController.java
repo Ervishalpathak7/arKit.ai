@@ -1,16 +1,12 @@
 package com.arkit.api.generation;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.arkit.api.generation.dto.GenerateArchitecturesRequest;
-import com.arkit.api.generation.types.ArchitectureGraph;
+import com.arkit.api.architecture.ArchitectureGraph;
 
 import jakarta.validation.Valid;
 import tools.jackson.databind.ObjectMapper;
@@ -19,11 +15,9 @@ import tools.jackson.databind.ObjectMapper;
 @RequestMapping("/api/v1/architectures")
 public class GenerationController {
 
-    // private final ObjectMapper objectMapper;
     private final GenerationService service;
 
     GenerationController(ObjectMapper om, GenerationService service) {
-        // this.objectMapper = om;
         this.service = service;
     }
 
@@ -33,13 +27,4 @@ public class GenerationController {
         ArchitectureGraph graph = service.GenerateArchitecture(req.description());
         return ResponseEntity.ok(graph);
     }
-
-    // private ArchitectureGraph hardcodedGraph() {
-    //     try (InputStream in = getClass().getResourceAsStream("/samples/url-shortener.json")) {
-    //         return objectMapper.readValue(in, ArchitectureGraph.class);
-    //     } catch (IOException e) {
-    //         throw new IllegalStateException("sample graph missing", e);
-    //     }
-    // }
-
 }

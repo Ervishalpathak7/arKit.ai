@@ -1,4 +1,4 @@
-package com.arkit.api.generation.types;
+package com.arkit.api.architecture;
 
 import java.util.List;
 

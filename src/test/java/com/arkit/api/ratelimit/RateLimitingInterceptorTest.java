@@ -1,4 +1,4 @@
-package com.arkit.api.interceptors;
+package com.arkit.api.ratelimit;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,7 +7,6 @@ import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 
-import com.arkit.api.ratelimit.RateLimiter;
 
 public class RateLimitingInterceptorTest {
 

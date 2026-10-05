@@ -1,4 +1,4 @@
-package com.arkit.api.generation;
+package com.arkit.api.architecture;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,13 +6,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.arkit.api.generation.types.ArchitectureGraph;
-import com.arkit.api.generation.types.Communication;
-import com.arkit.api.generation.types.Direction;
-import com.arkit.api.generation.types.Edge;
-import com.arkit.api.generation.types.Layer;
-import com.arkit.api.generation.types.Node;
-import com.arkit.api.generation.types.NodeType;
 
 public class GraphValidatorTest {
     private final GraphValidator validator = new GraphValidator();

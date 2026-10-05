@@ -6,16 +6,32 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import com.arkit.api.generation.exceptions.LlmResponseException;
-import com.arkit.api.generation.types.Message;
-import com.arkit.api.generation.types.MessageRequest;
-import com.arkit.api.generation.types.MessageResponse;
+import com.arkit.api.architecture.LlmResponseException;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Component
 class AnthropicLlmClient implements LlmClient {
 
     private final RestClient restClient;
     private final String model;
+
+    record Message(String role, String content) {
+    }
+
+    record ContentBlock(String type, String text) {
+    }
+
+    record MessageResponse(List<ContentBlock> content) {
+    }
+
+    record MessageRequest(
+            String model,
+            @JsonProperty("max_tokens") int maxTokens,
+            String system,
+            List<Message> messages
+
+    ) {
+    }
 
     AnthropicLlmClient(RestClient rc, @Value("${llm.model}") String model) {
         this.restClient = rc;

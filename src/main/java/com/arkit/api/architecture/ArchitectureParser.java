@@ -1,11 +1,8 @@
-package com.arkit.api.generation;
+package com.arkit.api.architecture;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import com.arkit.api.generation.exceptions.LlmResponseException;
-import com.arkit.api.generation.types.ArchitectureGraph;
 
 import tools.jackson.databind.ObjectMapper;
 
@@ -19,7 +16,7 @@ public class ArchitectureParser {
         this.objectMapper = om;
     }
 
-    ArchitectureGraph parse(String rawLlmOutput) {
+    public ArchitectureGraph parse(String rawLlmOutput) {
         String json = extractJson(rawLlmOutput);
         try {
             return objectMapper.readValue(json, ArchitectureGraph.class);

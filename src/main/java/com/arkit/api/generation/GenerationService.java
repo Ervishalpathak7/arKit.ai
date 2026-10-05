@@ -7,11 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import com.arkit.api.generation.types.ArchitectureGraph;
+import com.arkit.api.architecture.ArchitectureGraph;
+import com.arkit.api.architecture.ArchitectureParser;
+import com.arkit.api.architecture.GraphValidator;
 import com.arkit.api.llm.LlmClient;
-
-
-// Unhandled Exception : org.springframework.web.client.HttpClientErrorException$Unauthorized: 401 Unauthorized: "{"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"},"request_id":"req_011CfdfGsdsSLCp9TPH7C3iQ"}"
 
 @Service
 public class GenerationService {

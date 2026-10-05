@@ -1,19 +1,20 @@
-package com.arkit.api.generation.types;
+package com.arkit.api.architecture;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum Layer {
-    CLIENT, EDGE, APPLICATION, DATA, EXTERNAL;
+public enum NodeType {
+    CLIENT, CDN, LOAD_BALANCER, GATEWAY, PROXY, API_SERVER,
+    WORKER, CACHE, DATABASE, STORAGE, QUEUE, EXTERNAL_SERVICE, OTHER;
 
     @JsonCreator
-    public static Layer fromJson(String value) {
+    public static NodeType fromJson(String value) {
         if (value == null)
-            return APPLICATION;
+            return OTHER;
         try {
             return valueOf(value.trim().toUpperCase());
         } catch (IllegalArgumentException ex) {
-            return APPLICATION;
+            return OTHER;
 
         }
     }

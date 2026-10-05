@@ -1,20 +1,17 @@
-package com.arkit.api.interceptors;
+package com.arkit.api.ratelimit;
 
 import org.springframework.stereotype.Component;
-
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.arkit.api.ratelimit.RateLimiter;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-public class RateLimitInterceptor implements HandlerInterceptor {
+class RateLimitInterceptor implements HandlerInterceptor {
     private final RateLimiter rateLimiter;
 
     RateLimitInterceptor(RateLimiter rateLimiter) {

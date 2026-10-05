@@ -1,4 +1,4 @@
-package com.arkit.api.generation.exceptions;
+package com.arkit.api.architecture;
 
 public class LlmResponseException extends RuntimeException {
     public LlmResponseException(String message) {
