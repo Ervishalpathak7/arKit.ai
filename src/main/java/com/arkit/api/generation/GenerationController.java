@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
-import tools.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api/v1/architectures")
@@ -15,14 +14,14 @@ public class GenerationController {
 
     private final GenerationService service;
 
-    GenerationController(ObjectMapper om, GenerationService service) {
+    GenerationController(GenerationService service) {
         this.service = service;
     }
 
     @PostMapping
     public ResponseEntity<Generation> CreateArchitecture(
             @Valid @RequestBody GenerateArchitecturesRequest req) {
-        Generation graph = service.GenerateArchitecture(req.description());
+        Generation graph = service.generateArchitecture(req.description());
         return ResponseEntity.ok(graph);
     }
 }
