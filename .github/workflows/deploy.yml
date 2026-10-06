@@ -1,47 +1,51 @@
 name: Build and Push Image
 
 on:
-    push:
-        branches: [main]
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/**"
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            packages: write
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
-        steps:
-            - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-            - name: Lowercase image name
-              run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+      - name: Lowercase image name
+        run: echo "IMAGE=ghcr.io/${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
 
-            - uses: actions/setup-java@v4
-              name: "Set up JDK"
-              with:
-                distribution: temurin
-                java-version: "25"
-                cache: maven
-            
-            - name: Run tests
-              run: ./mvnw -B test
+      - uses: actions/setup-java@v4
+        name: "Set up JDK"
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
 
-            - uses: docker/login-action@v3
-              with:
-                  registry: ghcr.io
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run tests
+        run: ./mvnw -B test
+        working-directory: ./backend
 
-            - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-            - uses: docker/build-push-action@v6
-              name: "Build & Push Image"
-              with:
-                  context: .
-                  push: true
-                  tags: |
-                      ${{ env.IMAGE }}:${{ github.sha }}
-                      ${{ env.IMAGE }}:latest
-                  cache-from: type=gha
-                  cache-to: type=gha,mode=max
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/build-push-action@v6
+        name: "Build & Push Image"
+        with:
+          context: ./backend
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:${{ github.sha }}
+            ${{ env.IMAGE }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
