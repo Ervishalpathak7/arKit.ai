@@ -34,7 +34,7 @@ public class GenerationService {
         this.repository = repository;
     }
 
-    public Generation GenerateArchitecture(String description) {
+    public Generation generateArchitecture(String description) {
         String hashDescription = hash(description);
         Optional<Generation> cached = repository.findByDescriptionHash(hashDescription);
         if (cached.isPresent()) {
