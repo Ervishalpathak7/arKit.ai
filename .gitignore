@@ -2,8 +2,17 @@
 # Compiled class files
 *.class
 
+# Node modules 
+node_modules
+
 # Log files
+logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # Java build output
 target/
@@ -14,6 +23,10 @@ build/
 *.ear
 *.zip
 *.tar.gz
+
+# React build output
+dist
+dist-ssr
 
 # Maven
 .mvn/timing.properties
@@ -39,6 +52,13 @@ application-*.local.yml
 .classpath
 .project
 .settings/
+!.vscode/extensions.json
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # OS files
 .DS_Store
@@ -46,8 +66,9 @@ Thumbs.db
 
 # Environment and secrets
 .env
-.env.*
 !.env.example
+!frontend/.env.development
+!frontend/.env.production
 
 # Test and coverage reports
 reports/
@@ -60,3 +81,9 @@ coverage/
 *.swp
 *~
 compose.override.yaml
+
+
+*.local
+
+# Editor directories and files
+

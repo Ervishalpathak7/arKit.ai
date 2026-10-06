@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +22,9 @@ class RateLimitInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+        if (CorsUtils.isPreFlightRequest(request)) {
+            return true;
+        }
         String clientIp = resolveClientIp(request);
         if (!rateLimiter.tryAcquire(clientIp)) {
             long seconds = rateLimiter.retryAfterSeconds(clientIp);
