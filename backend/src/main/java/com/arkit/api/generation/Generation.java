@@ -4,14 +4,14 @@ import java.time.Instant;
 import java.util.UUID;
 
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.UuidGenerator.Style;
 import org.hibernate.type.SqlTypes;
 
 import com.arkit.api.architecture.ArchitectureGraph;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
@@ -20,8 +20,7 @@ import jakarta.persistence.Table;
 public class Generation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(insertable = false, updatable = false)
+    @UuidGenerator(style = Style.TIME)
     private UUID id;
 
     @Column(name = "description_hash", length = 64, nullable = false, updatable = false)
