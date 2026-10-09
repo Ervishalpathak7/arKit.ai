@@ -7,10 +7,7 @@ services:
     env_file:
       - .env
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/arkit
-      SPRING_DATASOURCE_USERNAME: arkit
+      SPRING_DATASOURCE_URL: jdbc:postgresql://aws-0-ap-south-1.pooler.supabase.com:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres.vzklrxaaaqjpfnqqvivr
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-    depends_on:
-      db:
-        condition: service_healthy
     restart: unless-stopped
