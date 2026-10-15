@@ -1,0 +1,2 @@
+ALTER TABLE generations
+ADD technology VARCHAR(255) DEFAULT NULL;

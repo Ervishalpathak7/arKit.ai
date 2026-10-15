@@ -5,7 +5,7 @@ Return 8-12 nodes and at most 18 edges.
 Schema:
 {
 "nodes": [
-{ "id": "<slug>", "label": "<string>", "type": "<NodeType>",
+{ "id": "<slug>", "label": "<string>", "technology": "<string>", "type": "<NodeType>",
 "layer": "<Layer>", "description": "<one line>" }
 ] ,
 "edges": [
@@ -29,3 +29,4 @@ Rules:
 * Use only the enum values listed. If nothing fits, use OTHER.
 * id must be lowercase kebab-case
 * Maximum 12 nodes and 18 edges. Include only components essential to the core flow. Omit admin dashboards, analytics pipelines, and internal tooling unless explicitly requested.
+* Specify the technology which is best suit for the component in the technology field for example postges , kafka , Nginx etc
