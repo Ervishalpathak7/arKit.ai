@@ -19,7 +19,7 @@ export type Layer = "CLIENT" | "EDGE" | "APPLICATION" | "DATA" | "EXTERNAL";
 export type ArchitectureNode = {
   id: string;
   label: string;
-  technology: string;
+  technology?: string;
   type: NodeType;
   layer: Layer;
   description?: string;

@@ -29,4 +29,8 @@ Rules:
 * Use only the enum values listed. If nothing fits, use OTHER.
 * id must be lowercase kebab-case
 * Maximum 12 nodes and 18 edges. Include only components essential to the core flow. Omit admin dashboards, analytics pipelines, and internal tooling unless explicitly requested.
-* Specify the technology which is best suit for the component in the technology field for example postges , kafka , Nginx etc
+* technology: the specific technology when the description or the
+  component's role clearly implies one (PostgreSQL, Redis, Kafka,
+  Nginx, S3). Omit this field entirely when any reasonable choice
+  would do — most API servers, workers, load balancers and clients
+  do not have an implied technology.
