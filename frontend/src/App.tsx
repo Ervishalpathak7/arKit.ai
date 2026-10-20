@@ -6,6 +6,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import './css/index.css';
+import ArchitectureNodeView from './ArchitectureNodeView';
 
 import { layout } from './layout';
 import { toReactFlow, LAYER_COLORS } from './mapGraph';
@@ -25,6 +26,8 @@ const LAYER_LABELS: Record<Layer, string> = {
   DATA: 'Data',
   EXTERNAL: 'External',
 };
+
+const nodeTypes = { architecture: ArchitectureNodeView };
 
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -172,7 +175,7 @@ export default function App() {
             </div>
           ) : (
             <>
-              <ReactFlow
+              <ReactFlow nodeTypes={nodeTypes}
                 nodes={nodes}
                 edges={edges}
                 onNodesChange={onNodesChange}

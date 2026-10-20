@@ -27,6 +27,7 @@ Rules:
 * Every edge "from" and "to" MUST match an existing node "id".
 * Use only the enum values listed. If nothing fits, use OTHER.
 * id must be lowercase kebab-case
+* labels must be 3 words or fewer
 * Maximum 12 nodes and 18 edges. Include only components essential to the core flow. Omit admin dashboards, analytics pipelines, and internal tooling unless explicitly requested.
 * technology: the specific technology when the description or the
   component's role clearly implies one (PostgreSQL, Redis, Kafka,

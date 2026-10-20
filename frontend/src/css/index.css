@@ -428,3 +428,73 @@ button {
   }
   .legend { display: none; }
 }
+/* ─── custom architecture node ──────────────────────────── */
+/* Append to index.css. These replace the inline style object
+   that mapGraph.ts used to put on each node. */
+
+.arch-node {
+  box-sizing: border-box;
+  width: 184px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px 0 11px;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--rule-strong); /* overridden per layer inline */
+  border-radius: 3px;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.arch-node:hover {
+  border-color: var(--rule-strong);
+  box-shadow: 0 1px 4px rgba(26, 32, 36, 0.07);
+}
+
+.arch-node.is-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-wash);
+}
+
+.arch-node-icon {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+}
+
+/* min-width: 0 is what lets the flex child shrink so ellipsis works. */
+.arch-node-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.arch-node-label {
+  font-size: 12px;
+  font-weight: 450;
+  line-height: 1.25;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.arch-node-tech {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  line-height: 1.2;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arch-node { transition: none; }
+}

@@ -21,33 +21,9 @@ export function toReactFlow(graph: ArchitectureGraph): {
 } {
   const nodes: Node[] = graph.nodes.map((n) => ({
     id: n.id,
-    data: {
-      label:
-        n.label.length > MAX_LABEL
-          ? `${n.label.slice(0, MAX_LABEL - 1)}…`
-          : n.label,
-      source: n,
-    },
+    type: "architecture",
+    data: { source: n },
     position: { x: 0, y: 0 },
-    style: {
-      width: NODE_WIDTH,
-      height: NODE_HEIGHT,
-      boxSizing: "border-box",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      textAlign: "center",
-      padding: "0 12px 0 14px",
-      background: "#ffffff",
-      color: "#1a2024",
-      border: "1px solid #d6dbda",
-      borderLeft: `3px solid ${LAYER_COLORS[n.layer]}`,
-      borderRadius: 3,
-      fontSize: 12,
-      fontWeight: 450,
-      lineHeight: 1.3,
-      cursor: "pointer",
-    },
   }));
 
   const edges: Edge[] = graph.edges.map((e, i) => ({

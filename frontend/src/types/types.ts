@@ -1,6 +1,6 @@
 
 
-type NodeType =
+export type NodeType =
   | "CLIENT"
   | "CDN"
   | "LOAD_BALANCER"
