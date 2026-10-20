@@ -19,9 +19,9 @@ public class GenerationController {
     }
 
     @PostMapping
-    public ResponseEntity<Generation> CreateArchitecture(
+    public ResponseEntity<GenerateArchitectureResponse> CreateArchitecture(
             @Valid @RequestBody GenerateArchitecturesRequest req) {
         Generation graph = service.generateArchitecture(req.description());
-        return ResponseEntity.ok(graph);
+        return ResponseEntity.ok(GenerateArchitectureResponse.from(graph));
     }
 }

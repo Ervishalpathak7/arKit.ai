@@ -50,7 +50,7 @@ public class Generation {
         return this.id;
     }
 
-    public String getDesciptionHash() {
+    public String getDescriptionHash() {
         return this.descriptionHash;
     }
 
