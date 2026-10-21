@@ -13,8 +13,6 @@ export const LAYER_COLORS: Record<Layer, string> = {
   EXTERNAL: "#be123c",
 };
 
-const MAX_LABEL = 24;
-
 export function toReactFlow(graph: ArchitectureGraph): {
   nodes: Node[];
   edges: Edge[];
