@@ -19,7 +19,7 @@ import jakarta.persistence.Table;
 @Table(name = "generations")
 public class Generation {
 
-    @Id
+    @Id 
     @UuidGenerator(style = Style.TIME)
     private UUID id;
 
